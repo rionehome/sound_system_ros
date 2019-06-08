@@ -38,7 +38,7 @@ class NavigationNLP:
 
         if "Here is" in text:
             # 現在位置の場所の登録
-            register_topic = "/navigation/register_location"
+            register_topic = "/navigation/register_current_location"
             location_name = None
             if "kitchen" in text:
                 location_name = "kitchen"
