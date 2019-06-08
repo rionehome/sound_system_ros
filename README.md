@@ -2,7 +2,11 @@
 ## Overview
 音声認識、発話を管理するパッケージです。
 
-デフォルトでは音声認識にjuliusを使用しています。
+音声認識に julius
+
+Hotword検知には Snowboy
+
+発話は Svox
 
 ## Setup
 発話にSvoxPicoを使用しています
@@ -11,49 +15,39 @@
 sudo apt-get install -y libttspico-utils
 ```
 
+Hotword検出に使っているSnowboyはC言語のライブラリに依存している
+
+scripts/module/の中にある_snowboydetect.soがCのライブラリ
+ただし各自の環境依存でコンパイルするものなので場合によっては動かない可能性ある
+
+その場合は自分でmakeして出来たものと入れ替えて欲しい
+詳しくはQiitaなどでググッて
+もしかしたら後日書くかもしれない
+
+
 ## Usage
 
-(音声認識)
+(音声認識,発話など音声認識の中心)
 ```
 roslaunch sound_system sound_system.launch
 ```
-or
 
-(音声認識＋発話)
+(Hotwordの検知)
 ```
-roslaunch sound_system sound_system_demo.launch
+roslaunch sound_system hotword.launch 
 ```
 
-**起動直後は音声認識は停止している**
+(ナビゲーション用のなんちゃって言語処理)
+```
+roslaunch sound_system navigation_nlp.launch
+```
 
-**`/sound_system/recognition/active`** に true をpublishする
+起動直後はHotword検知待ち
+
+Hotwordは「Hey Ducker」
+
+
+動かすときは「Hey Ducker」で起動させ、その後目的の命令を話すという形式
 
 ## Node
 **`name` sound_system**
-
-### Subscribe Topic
-
-* **`/sound_system/recognition/activate`** 音声認識のresume/pause ( std_msgs/Bool )
-    true : resume
-    false: pause
-
-* **`/sound_system/speak`** 文の読み上げ ( std_msgs/String )
-
-* **`/sound_system/recognition`** 音声認識の開始要求 ( std_msgs/String )
-
-
-### Publish Topic
-
-* **`/sound_system/recognition/result`** 音声認識の結果文 ( std_msgs/String )
-
-
-### Parameter
-
-* **`config`** juliusのjconfファイルを指定 ( default = localhost )
-
-* **`host`**   juliusのホストを指定します ( default = localhost )
-
-* **`port`**   juliusのポートを指定 ( default = 10500 )
-
-* **`debug`**  juliusの標準出力の表示判定 ( default = false )
-
