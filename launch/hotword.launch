@@ -1,0 +1,6 @@
+<launch>
+
+  <node pkg="sound_system" name="hotword" type="hotword_detector.py" output="screen">
+  </node>
+
+</launch>

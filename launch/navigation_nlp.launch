@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="sound_system" name="navigation_nlp" type="navigation_nlp.py" output="screen">
+  </node>
+
+</launch>
+

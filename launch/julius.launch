@@ -1,0 +1,11 @@
+<launch>
+
+  <node pkg="sound_system" name="julius" type="julius.py" output="screen">
+  <param name="config" value="session_en.jconf"/>
+  <param name="host" value="localhost"/>
+  <param name="port" value="10500"/>
+  <param name="debug" value="true"/>
+  </node>
+
+</launch>
+

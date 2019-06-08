@@ -1,0 +1,24 @@
+##
+## ディクテーションキット GMM-HMM版音響モデル・入力設定
+##
+
+# 音響モデル: GMM-HMM
+-h model/phone_m/jnas-tri-3k16-gid.binhmm
+-hlist model/phone_m/logicalTri-3k16-gid.bin
+
+# 言語モデル重み・単語挿入ペナルティ
+-lmp  10 0
+-lmp2 10 0
+
+# 入力
+#-input rawfile
+#-charconv EUC-JP UTF-8
+
+-v model/lang_m/bccwj.60k.htkdic
+-hlist model/phone_m/logicalTri
+-n 5
+-output 1
+-input mic
+-zmeanframe
+-rejectshort 800
+-charconv EUC-JP UTF-8

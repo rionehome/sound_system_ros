@@ -1,0 +1,16 @@
+<launch>
+
+  <node pkg="sound_system" name="sound_system" type="main.py" output="screen">
+  </node>
+
+  <node pkg="sound_system" name="google_assistant" type="google_assistant.py" output="screen">
+  </node>
+
+  <node pkg="sound_system" name="svox" type="svox.py" output="screen">
+  </node>
+
+  <node pkg="sound_system" name="demo_speak_repeat" type="demo_repeat.py" output="screen">
+  </node>
+
+</launch>
+

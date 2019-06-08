@@ -1,0 +1,167 @@
+What is this event ?	わっついずでぃすいべんと	Robocup	Question	このイベントは何？	このいべんとはなに	このいべんとはなに？	Question
+What're your name ?	わっつゆあねーむ	Rione	Question	あなたの名前は？	あなたのなまえは	あなたのなまえは？	Question
+What day is it today ?	わっつでいいずいっつとぅでい	November 18	Question	今日は何月何日？	きょうはなんがつなんにち	きょうはなんがつなんにち？	Question
+How are you ?	はうあーゆー	I’m fine	Question	今日の気分は？	きょうのきぶんは	きょうのきぶんは？	Question
+What are you doing now ?	わっつあーゆーどーいんぐなう	I’m working now	Question				
+Can you help me ?	きゃんゆーへるぷみー	Yes of cource	Question				
+Do you like Japanese ?	どぅーゆーらいくじゃぱにーず	Yes	Question				
+Did you sleep last night ?	でぃじゅーすりーぷらすとないと	No	Question				
+Do you play video games ?	どぅーゆーぷれいびでおげーむ	Yes	Question				
+How is the weather today ?	はういずざうぇざーとぅでい	It’s sunny	Question				
+Can you play baseball ?	きゃんゆーぷれいべーすぼーる	No	Question				
+Where were you born ?	うぇあーわーゆーぼーん	I’m from japan	Question				
+Do you have time now ?	どぅーゆーはぶたいむなう	Yes I’m free	Question				
+What are interested in ?	わっつあーゆーいんたれすてぃっどいん	I'm interested in human	Question				
+Have you ever been to japan ?	はぶーゆーえばーびーんとぅじゃぱん	yes I'm from japan	Question				
+How did you come here ?	はうでぃじゅーかむひあー	by the train	Question				
+What is your team's home city ?	わっついずゆあーちーむずほーむしてぃー	My team's home city is Kusatsu city.	Question				
+What color is the jam ?	わっつからーいずざじゃむ	It is red.	Question				
+What is the taste of jam ?	わっついずざてーすつおぶじゃむ	It is sweet.	Question				
+How many objects are in the bookcase ?	はうめにーおぶじぇくつあーいんざぶっくけーす	Three.	Question				
+Which is the lightest snack ?	うぃっちいずざらいてすとすなっく	It is the biscuit.	Question				
+How many chairs are in the kitchen ?	はうめにーちぇあーずあーいんざきっちん	There are four chairs in the kitchen.	Question				
+Where is located the desk ?	うぇあーいずろけーてぃっどざですく	It is in the kitchen.	Question				
+Who invented the C programing language ?	ふーいんべんてぃっどざしーぷろぐらみんぐらんぐえーじ	Dennis.	Question				
+What is the highest mountain in Japan ?	わっついずざはいえすとまうんてんいんじゃぱん	Mount Fuji.	Question				
+Which city are we in ?	うぃっちしてぃあーうぃーいん	Kusatsu.	Question				
+Yes.	いぇす	Yes	Response				
+Yes it is.	いぇすいてぃいず	Yes	Response				
+That’s right !	ざっつらいつ	Yes	Response				
+No.	のー	No	Response				
+No it isn’t.	のーいてぃいずんつ	No	Response				
+That’s wrong !	ざっつろんぐ	No	Response				
+Change Language	ちぇんじらんぐえいじ	Change Language	SystemCall				
+a	えー						
+b	びー						
+c	しー						
+d	でぃー						
+e	いー						
+f	えふ						
+g	じー						
+h	えいち						
+i	あい						
+j	じぇー						
+k	けー						
+l	える						
+m	えむ						
+n	えぬ						
+o	おー						
+p	ぴー						
+q	きゅー						
+r	あーる						
+s	えす						
+t	てぃー						
+u	ゆー						
+v	ぶい						
+w	だぶる						
+x	えっくす						
+y	わい						
+z	ぜっと						
+a	あ						
+i	い						
+u	う						
+e	え						
+o	お						
+ka	か						
+ki	き						
+ku	く						
+ke	け						
+ko	こ						
+sa	さ						
+si	し						
+su	す						
+se	せ						
+so	そ						
+ta	た						
+ti	ち						
+tu	つ						
+te	て						
+to	と						
+na	な						
+ni	に						
+nu	ぬ						
+ne	ね						
+ha	は						
+hi	ひ						
+hu	ふ						
+he	へ						
+ho	ほ						
+ma	ま						
+mi	み						
+mu	む						
+me	め						
+mo	も						
+ya	や						
+yu	ゆ						
+yo	よ						
+ra	ら						
+ri	り						
+ru	る						
+re	れ						
+ro	ろ						
+wa	わ						
+wo	を						
+nn	ん						
+ga	が						
+gi	ぎ						
+gu	ぐ						
+ge	げ						
+go	ご						
+za	ざ						
+zi	じ						
+zu	ず						
+ze	ぜ						
+zo	ぞ						
+da	だ						
+di	ぢ						
+du	づ						
+de	で						
+to	ど						
+ba	ば						
+bi	び						
+bu	ぶ						
+be	べ						
+bo	ぼ						
+pa	ぱ						
+pi	ぴ						
+pu	ぷ						
+pe	ぺ						
+po	ぽ						
+kya	きゃ						
+kyu	きゅ						
+kyo	きょ						
+sya	しゃ						
+syu	しゅ						
+syo	しょ						
+tya	ちゃ						
+tyu	ちゅ						
+tyo	ちょ						
+nya	にゃ						
+nyu	にゅ						
+nyo	の						
+hya	ひゃ						
+hyu	ひゅ						
+hyo	ひょ						
+mya	みゃ						
+myu	みゅ						
+myo	みょ						
+rya	りゃ						
+ryu	りゅ						
+ryo	りょ						
+gya	ぎゃ						
+gyu	ぎゅ						
+gyo	ぎょ						
+zya	じゃ						
+zyu	じゅ						
+zyo	じょ						
+dya	ぢゃ						
+dyu	ぢゅ						
+dyo	ぢょ						
+bya	びゃ						
+byu	びゅ						
+byo	びょ						
+pya	ぴゃ						
+pyu	ぴゅ						
+pyo	ぴょ						
+							
+pyo	ぴょ						
