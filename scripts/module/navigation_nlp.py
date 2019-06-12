@@ -30,6 +30,7 @@ class NavigationNLP:
 
         # Juliusだとスペースが使えないのでアンダーバーで代用しているのでその部分を再変換
         text = message.request.replace("_", " ")
+        answer = ""
 
         if text == "Where are you ?":
             # 現在位置の返答
@@ -63,13 +64,17 @@ class NavigationNLP:
                 location_name = "goal"
             if location_name is not None:
                 request_location_topic = "/navigation/request_location"
-                rospy.wait_for_service(request_location_topic)
-                request_location = rospy.ServiceProxy(request_location_topic, RequestLocation)(location_name).location
-                if request_location.name == location_name:
-                    answer = "OK, I go to the {}.".format(location_name)
-                    self.move_command_publisher.publish(request_location)
-                else:
-                    answer = "Sorry, I don't know where {} is.".format(location_name)
+                try:
+                    rospy.wait_for_service(request_location_topic, timeout=1)
+                    request_location = rospy.ServiceProxy(request_location_topic, RequestLocation)(
+                        location_name).location
+                    if request_location.name == location_name:
+                        answer = "OK, I go to the {}.".format(location_name)
+                        self.move_command_publisher.publish(request_location)
+                    else:
+                        answer = "Sorry, I don't know where {} is.".format(location_name)
+                except rospy.ROSException:
+                    answer = "Sorry, I can't find location node."
             return NLPServiceResponse(answer, False)
 
         return NLPServiceResponse("", False)
