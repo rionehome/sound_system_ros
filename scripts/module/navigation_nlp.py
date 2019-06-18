@@ -6,6 +6,7 @@ import math
 from sound_system.srv import *
 from location.srv import *
 from location.msg import *
+from std_msgs.msg import String
 
 DISTANCE_RANGE = 1.0
 
@@ -16,6 +17,7 @@ class NavigationNLP:
         rospy.init_node("nlp")
         rospy.Service("/sound_system/nlp", NLPService, self.analyze)
         self.move_command_publisher = rospy.Publisher("/navigation/move_command", Location, queue_size=10)
+        self.follow_command_publisher = rospy.Publisher("/follow_me_nlp/follow_me", String, queue_size=10)
 
         rospy.spin()
 
@@ -35,6 +37,15 @@ class NavigationNLP:
         if text == "Where are you ?":
             # 現在位置の返答
             answer = self.answer_current_location()
+            return NLPServiceResponse(answer, False)
+        print(text)
+        if "follow" in text:
+            if "Start" in text:
+                self.follow_command_publisher.publish("start")
+                answer = "OK, I start follow you."
+            elif "Stop" in text:
+                self.follow_command_publisher.publish("stop")
+                answer = "OK, I stop follow you."
             return NLPServiceResponse(answer, False)
 
         if "Here is" in text:
