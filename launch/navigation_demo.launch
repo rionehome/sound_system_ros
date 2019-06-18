@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="sound_system" name="sound_system" type="main.py" output="screen">
+  </node>
+
+</launch>
+
