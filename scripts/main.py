@@ -19,7 +19,7 @@ class Main:
 
     def __init__(self):
         self.julius = Julius(port=10500, config="navigation_nlp.jconf", is_debug=False)
-        self.sphinx = Sphinx()
+        self.sphinx = Sphinx(rospy.get_param("/sound_system/sphinx_config"))
         self.svox = Svox()
 
         log_file = "{}/{}".format(rospkg.RosPack().get_path("sound_system"), "logger.log")

@@ -1,6 +1,7 @@
 <launch>
 
   <node pkg="sound_system" name="sound_system" type="main.py" output="screen">
+  <param name="sphinx_config" value="follow_me_sphinx"/>
   </node>
 
   <node pkg="sound_system" name="hotword" type="hotword_detector.py" output="screen">

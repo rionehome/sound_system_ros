@@ -11,10 +11,11 @@ from pocketsphinx import LiveSpeech
 
 class Sphinx:
 
-    def __init__(self):
+    def __init__(self, file_name):
         self.speech = None
         self.model_path = '/usr/local/lib/python2.7/dist-packages/pocketsphinx/model'  # 音響モデルのディレクトリの絶対パス
         self.dictionary_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dictionary')  # 辞書のディレクトリの絶対パス
+        self.file_name = file_name
 
     def resume(self):
         print('== START RECOGNITION ==')
@@ -22,8 +23,8 @@ class Sphinx:
             verbose=False, sampling_rate=8000, buffer_size=2048, no_search=False, full_utt=False,
             hmm=os.path.join(self.model_path, 'en-us'),
             lm=False,
-            dic=os.path.join(self.dictionary_path, 'follow_me_sphinx.dict'),
-            jsgf=os.path.join(self.dictionary_path, 'follow_me_sphinx.gram')
+            dic=os.path.join(self.dictionary_path, "{}.dict".format(self.file_name)),
+            jsgf=os.path.join(self.dictionary_path, "{}.gram".format(self.file_name))
         )
 
     # 音声認識ストップ
