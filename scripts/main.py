@@ -23,7 +23,8 @@ class Main:
         self.svox = Svox()
 
         log_file = "{}/{}".format(rospkg.RosPack().get_path("sound_system"), "logger.log")
-        os.remove(log_file)
+        if os.path.exists(log_file):
+            os.remove(log_file)
         self.log = open(log_file, "a")
 
         rospy.init_node("sound_system", anonymous=False)
