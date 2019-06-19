@@ -45,3 +45,11 @@ class Sphinx:
                 return text
             else:
                 print("**noise**")
+
+
+if __name__ == '__main__':
+    sphinx = Sphinx()
+    for i in range(5):
+        sphinx.resume()
+        print("Result: {}".format(sphinx.recognition()))
+        sphinx.pause()
