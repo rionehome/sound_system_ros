@@ -17,7 +17,7 @@ class NavigationNLP:
         rospy.init_node("nlp")
         rospy.Service("/sound_system/nlp", NLPService, self.analyze)
         self.move_command_publisher = rospy.Publisher("/navigation/move_command", Location, queue_size=10)
-        self.follow_command_publisher = rospy.Publisher("/follow_me_nlp/follow_me", String, queue_size=10)
+        self.follow_command_publisher = rospy.Publisher("/follow_me/control", String, queue_size=10)
 
         self.register_topic = "/navigation/register_current_location"
         self.request_location_topic = "/navigation/request_location"
