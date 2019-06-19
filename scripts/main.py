@@ -9,6 +9,7 @@ import rospkg
 from sound_system.srv import *
 
 from module.julius import Julius
+from module.sphinx import Sphinx
 from module.svox import Svox
 from std_msgs.msg import String
 import os
@@ -18,6 +19,7 @@ class Main:
 
     def __init__(self):
         self.julius = Julius(port=10500, config="navigation_nlp.jconf", is_debug=False)
+        self.sphinx = Sphinx()
         self.svox = Svox()
 
         log_file = "{}/{}".format(rospkg.RosPack().get_path("sound_system"), "logger.log")
@@ -57,6 +59,12 @@ class Main:
                 text = self.julius.recognition()
                 self.julius.pause()
 
+                # Sphinxで音声認識処理
+                """
+                self.sphinx.resume()
+                text = self.julius.recognition()
+                self.sphinx.pause()
+                """
                 # 認識内容のログ出力と表示
                 print(text)
                 self.output_log("julius: {}".format(text))

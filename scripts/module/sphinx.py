@@ -9,7 +9,7 @@ import sys
 from pocketsphinx import LiveSpeech
 
 
-class Recognition:
+class Sphinx:
 
     def __init__(self):
         self.speech = None
@@ -35,6 +35,8 @@ class Recognition:
     def recognition(self):
         for text in self.speech:
             score = text.confidence()
+            print(text, score)
+            print(score)
             if score > 0.1:
                 text = str(text)
                 # self.pub.publish(text)  # 音声認識の結果をpublish
@@ -42,7 +44,3 @@ class Recognition:
                 return text
             else:
                 print("**noise**")
-
-
-if __name__ == '__main__':
-    Recognition()
