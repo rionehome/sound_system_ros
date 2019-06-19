@@ -5,21 +5,28 @@ import signal
 import threading
 
 import rospy
+import rospkg
 from sound_system.srv import *
 
 from module.julius import Julius
+from module.sphinx import Sphinx
 from module.svox import Svox
 from std_msgs.msg import String
+import os
 
 
 class Main:
 
     def __init__(self):
         self.julius = Julius(port=10500, config="navigation_nlp.jconf", is_debug=False)
+        self.sphinx = Sphinx()
         self.svox = Svox()
 
+        log_file = "{}/{}".format(rospkg.RosPack().get_path("sound_system"), "logger.log")
+        os.remove(log_file)
+        self.log = open(log_file, "a")
+
         rospy.init_node("sound_system", anonymous=False)
-        self.publisher = rospy.Publisher("/sound_system/recognition", String, queue_size=10)
         rospy.Service("/sound_system/speak", StringService, self.to_speak)
 
         # マルチスレッドで動かす
@@ -51,20 +58,38 @@ class Main:
                 self.julius.resume()
                 text = self.julius.recognition()
                 self.julius.pause()
+
+                # Sphinxで音声認識処理
+                """
+                self.sphinx.resume()
+                text = self.julius.recognition()
+                self.sphinx.pause()
+                """
+                # 認識内容のログ出力と表示
                 print(text)
+                self.output_log("julius: {}".format(text))
+
                 # 認識したテキストデータを自然言語処理に投げる
+
                 rospy.wait_for_service(nlp_topic, timeout=1)
                 nlp_result = rospy.ServiceProxy(nlp_topic, NLPService)(text)
-                print("response: {}".format(nlp_result.response))
                 speak_text = nlp_result.response
+
+                # スピーク内容のログ出力と表示
+                print("response: {}".format(speak_text))
+                self.output_log("response: {}".format(speak_text))
+
                 if speak_text:
                     rospy.wait_for_service(speak_topic, timeout=1)
                     rospy.ServiceProxy(speak_topic, StringService)(speak_text)
+
                 # 全体に投げる用
-                self.publisher.publish(text)
-                print(text)
             except rospy.ROSException:
                 print("接続エラー")
+
+    def output_log(self, text):
+        self.log.write("{}\n".format(text))
+        self.log.flush()
 
     def to_speak(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse
@@ -80,5 +105,5 @@ class Main:
         return StringServiceResponse()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Main()

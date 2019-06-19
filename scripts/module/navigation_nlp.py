@@ -6,6 +6,7 @@ import math
 from sound_system.srv import *
 from location.srv import *
 from location.msg import *
+from std_msgs.msg import String
 
 DISTANCE_RANGE = 1.0
 
@@ -16,6 +17,12 @@ class NavigationNLP:
         rospy.init_node("nlp")
         rospy.Service("/sound_system/nlp", NLPService, self.analyze)
         self.move_command_publisher = rospy.Publisher("/navigation/move_command", Location, queue_size=10)
+        self.follow_command_publisher = rospy.Publisher("/follow_me/control", String, queue_size=10)
+
+        self.register_topic = "/navigation/register_current_location"
+        self.request_location_topic = "/navigation/request_location"
+        self.request_current_topic = "/navigation/request_current_location"
+        self.request_location_list_topic = "/navigation/request_location_list"
 
         rospy.spin()
 
@@ -36,10 +43,18 @@ class NavigationNLP:
             # 現在位置の返答
             answer = self.answer_current_location()
             return NLPServiceResponse(answer, False)
+        print(text)
+        if "follow" in text:
+            if "Start" in text:
+                self.follow_command_publisher.publish("start")
+                answer = "OK, I start follow you."
+            elif "Stop" in text:
+                self.follow_command_publisher.publish("stop")
+                answer = "OK, I stop follow you."
+            return NLPServiceResponse(answer, False)
 
         if "Here is" in text:
             # 現在位置の場所の登録
-            register_topic = "/navigation/register_current_location"
             location_name = None
             if "kitchen" in text:
                 location_name = "kitchen"
@@ -48,8 +63,12 @@ class NavigationNLP:
             elif "goal" in text:
                 location_name = "goal"
             if location_name is not None:
-                rospy.wait_for_service(register_topic)
-                rospy.ServiceProxy(register_topic, RegisterLocation)(location_name)
+                try:
+                    rospy.wait_for_service(self.register_topic, timeout=1)
+                    rospy.ServiceProxy(self.register_topic, RegisterLocation)(location_name)
+                except rospy.ROSException:
+                    answer = "Error, not find location node."
+
             answer = "OK, Here is the {}.".format(location_name)
             return NLPServiceResponse(answer, False)
 
@@ -63,10 +82,9 @@ class NavigationNLP:
             elif "goal" in text:
                 location_name = "goal"
             if location_name is not None:
-                request_location_topic = "/navigation/request_location"
                 try:
-                    rospy.wait_for_service(request_location_topic, timeout=1)
-                    request_location = rospy.ServiceProxy(request_location_topic, RequestLocation)(
+                    rospy.wait_for_service(self.request_location_topic, timeout=1)
+                    request_location = rospy.ServiceProxy(self.request_location_topic, RequestLocation)(
                         location_name).location
                     if request_location.name == location_name:
                         answer = "OK, I go to the {}.".format(location_name)
@@ -74,13 +92,12 @@ class NavigationNLP:
                     else:
                         answer = "Sorry, I don't know where {} is.".format(location_name)
                 except rospy.ROSException:
-                    answer = "Sorry, I can't find location node."
+                    answer = "Error, not find location node."
             return NLPServiceResponse(answer, False)
 
         return NLPServiceResponse("", False)
 
-    @staticmethod
-    def answer_current_location():
+    def answer_current_location(self):
         # type: () -> str
         """
         現在位置をテキストにする関数
@@ -90,16 +107,20 @@ class NavigationNLP:
         :return: 現在の場所に関するテキストデータ
         """
         # 現在位置を取得
-        request_current_topic = "/navigation/request_current_location"
-        rospy.wait_for_service(request_current_topic)
-        request_current_location = rospy.ServiceProxy(request_current_topic, RequestCurrentLocation)()
-        current_location = request_current_location.location  # type: Location
+        try:
+            rospy.wait_for_service(self.request_current_topic, timeout=1)
+            request_current_location = rospy.ServiceProxy(self.request_current_topic, RequestCurrentLocation)()
+            current_location = request_current_location.location  # type: Location
+        except rospy.ROSException:
+            return "Error, not find location node."
 
         # 現在登録されている場所情報をすべて取得
-        request_location_list_topic = "/navigation/request_location_list"
-        rospy.wait_for_service(request_current_topic)
-        request_locations = rospy.ServiceProxy(request_location_list_topic, RequestLocationList)()
-        locations = request_locations.locations  # type: list
+        try:
+            rospy.wait_for_service(self.request_current_topic)
+            request_locations = rospy.ServiceProxy(self.request_location_list_topic, RequestLocationList)()
+            locations = request_locations.locations  # type: list
+        except rospy.ROSException:
+            return "Error, not find location node."
 
         # 現在どこにいるかの判定
         answer = None
