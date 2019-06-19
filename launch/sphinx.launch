@@ -1,6 +1,6 @@
 <launch>
 
-  <node pkg="sound_system" name="julius" type="sphinx.py" output="screen">
+  <node pkg="sound_system" name="sound_system" type="sphinx.py" output="screen">
   <param name="sphinx_config" value="follow_me_sphinx"/>
   </node>
 
