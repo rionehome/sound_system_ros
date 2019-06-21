@@ -1,7 +1,19 @@
 <launch>
 
   <node pkg="sound_system" name="sound_system" type="main.py" output="screen">
-  <param name="sphinx_config" value="follow_me_sphinx"/>
+  <param name="recognition_module" value="julius"/>
+  </node>
+
+  <!--node pkg="sound_system" name="julius" type="julius.py" output="screen">
+  <param name="config" value="navigation_nlp.jconf"/>
+  <param name="host" value="localhost"/>
+  <param name="port" value="10500"/>
+  <param name="debug" value="false"/>
+  </node-->
+
+  <node pkg="sound_system" name="sphinx" type="sphinx.py" output="screen">
+  <param name="dict" value="follow_me_sphinx.dict"/>
+  <param name="gram" value="follow_me_sphinx.gram"/>
   </node>
 
   <node pkg="sound_system" name="hotword" type="hotword_detector.py" output="screen">
