@@ -64,7 +64,7 @@ class Main:
                 print("音声認識 終了")
                 # 認識内容のログ出力と表示
                 print(text)
-                self.output_log("julius: {}".format(text))
+                self.output_log("sphinx: {}".format(text))
 
                 # 認識したテキストデータを自然言語処理に投げる
                 rospy.wait_for_service(self.nlp_topic, timeout=1)
