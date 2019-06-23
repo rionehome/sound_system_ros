@@ -36,8 +36,30 @@ class Sphinx:
 
         topic = "/sound_system/recognition"
         rospy.Service(topic, StringService, self.recognition)
+        rospy.Subscriber("/sound_system/sphinx/dict", String, self.change_dict)
+        rospy.Subscriber("/sound_system/sphinx/gram", String, self.change_gram)
         self.multi_thread()
         # rospy.spin()
+
+    def change_dict(self, message):
+        # type: (String) -> None
+        """
+        ROS Subscriber関数
+        受け取ったテキスト名をdictに設定
+        :param message:
+        :return:
+        """
+        self.dict = message.data
+
+    def change_gram(self, message):
+        # type: (String) -> None
+        """
+        ROS Subscriber関数
+        受け取ったテキスト名をgramに設定
+        :param message:
+        :return:
+        """
+        self.gram = message.data
 
     def resume(self):
         print("== START RECOGNITION ==")
