@@ -25,16 +25,22 @@ DEFAULT_CONFIG = "default.jconf"
 
 
 class Julius:
-    def __init__(self, host="localhost", port=10500, config=None, is_debug=False):
-        self.is_debug = is_debug
-        self.host = host
-        self.port = port
+
+    def __init__(self):
+        
+        rospy.init_node("julius")
+
+        self.config = rospy.get_param("/{}/config".format(rospy.get_name()))
+        self.host = rospy.get_param("/{}/host".format(rospy.get_name()))
+        self.port = rospy.get_param("/{}/port".format(rospy.get_name()))
+        self.is_debug = rospy.get_param("/{}/debug".format(rospy.get_name()))
         self.client = None
         self.process = None
         self.active = True
-        if config is None:
-            config = DEFAULT_CONFIG
-        self.boot(config)
+        if self.config is None:
+            self.config = DEFAULT_CONFIG
+        print(self.config)
+        self.boot(self.config)
         sleep(1)
         self.connect()
 
@@ -44,6 +50,10 @@ class Julius:
             sys.exit(0)
 
         signal.signal(signal.SIGINT, exit)
+
+        topic = "/sound_system/recognition"
+        rospy.Service(topic, StringService, self.recognition)
+        rospy.spin()
 
     def boot(self, config):
         # type: (str) -> None
@@ -61,8 +71,9 @@ class Julius:
         self.client.send("TERMINATE\n")
         self.active = False
 
-    def recognition(self):
-        # type: ()-> str
+    def recognition(self, message):
+        # type: (StringServiceRequest)-> StringServiceResponse
+        self.resume()
         data = " "
         is_recogout = False
         while True:
@@ -92,7 +103,8 @@ class Julius:
                 if sentences[0] == WHYPO_WORD:
                     for sentence in sentences:
                         if WORD in sentence:
-                            return sentence.split('"')[1].replace("_", " ")
+                            self.pause()
+                            return StringServiceResponse(sentence.split('"')[1].replace("_", " "))
 
     def connect(self):
         try:
@@ -103,6 +115,6 @@ class Julius:
         except IOError:
             sys.exit(1)
 
-    @staticmethod
-    def start():
-        rospy.spin()
+
+if __name__ == '__main__':
+    Julius()
