@@ -37,6 +37,9 @@ class Main:
         self.speak_topic = "/sound_system/speak"
         self.recognition_topic = "/sound_system/recognition"
 
+        self.nlp_pub = rospy.Publisher("{}/request".format(self.nlp_topic), String, queue_size=10)
+        self.nlp_sub = rospy.Subscriber("{}/response".format(self.nlp_topic), String, self.nlp_callback)
+
         # マルチスレッドで動かす
         self.thread_stop = threading.Event()
         self.thread = threading.Thread(target=self.multi_thread)
@@ -67,6 +70,8 @@ class Main:
                 self.output_log("sphinx: {}".format(text))
 
                 # 認識したテキストデータを自然言語処理に投げる
+                self.nlp_pub.publish(text)
+                """
                 rospy.wait_for_service(self.nlp_topic, timeout=1)
                 nlp_result = rospy.ServiceProxy(self.nlp_topic, NLPService)(text)
                 speak_text = nlp_result.response
@@ -78,7 +83,7 @@ class Main:
                 if speak_text:
                     rospy.wait_for_service(self.speak_topic, timeout=1)
                     rospy.ServiceProxy(self.speak_topic, StringService)(speak_text)
-
+                """
                 # 全体に投げる用
             except rospy.ROSException:
                 print("接続エラー")
@@ -86,6 +91,16 @@ class Main:
     def output_log(self, text):
         self.log.write("{}\n".format(text))
         self.log.flush()
+
+    def nlp_callback(self, message):
+        # type: (String) -> None
+        speak_text = message.data
+        print("response: {}".format(speak_text))
+        self.output_log("response: {}".format(speak_text))
+        print("sadsadsadasdsa: {}".format(speak_text))
+        if speak_text:
+            rospy.wait_for_service(self.speak_topic, timeout=1)
+            rospy.ServiceProxy(self.speak_topic, StringService)(speak_text)
 
     def to_speak(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse

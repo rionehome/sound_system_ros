@@ -15,7 +15,6 @@ class NavigationNLP:
 
     def __init__(self):
         rospy.init_node("nlp")
-        rospy.Service("/sound_system/nlp", NLPService, self.analyze)
         self.move_command_publisher = rospy.Publisher("/navigation/move_command", Location, queue_size=10)
         self.follow_command_publisher = rospy.Publisher("/follow_me/control", String, queue_size=10)
 
@@ -24,10 +23,13 @@ class NavigationNLP:
         self.request_current_topic = "/navigation/request_current_location"
         self.request_location_list_topic = "/navigation/request_location_list"
 
+        self.subscriber = rospy.Subscriber("/sound_system/nlp/request", String, self.analyze)
+        self.publisher = rospy.Publisher("/sound_system/nlp/response", String, queue_size=10)
+
         rospy.spin()
 
     def analyze(self, message):
-        # type: (NLPServiceRequest) -> NLPServiceResponse
+        # type: (String) -> NLPServiceResponse
         """
         ROSサービスサーバー関数
         音声認識で認識した言語の処理を行う
@@ -36,13 +38,14 @@ class NavigationNLP:
         """
 
         # Juliusだとスペースが使えないのでアンダーバーで代用しているのでその部分を再変換
-        text = message.request.replace("_", " ")
+        text = message.data.replace("_", " ")
         answer = ""
 
         if text == "Where are you ?":
             # 現在位置の返答
             answer = self.answer_current_location()
-            return NLPServiceResponse(answer, False)
+            self.publisher.publish(answer)
+            return
         print(text)
         if "follow" in text:
             if "Start" in text:
@@ -51,7 +54,8 @@ class NavigationNLP:
             elif "Stop" in text:
                 self.follow_command_publisher.publish("stop")
                 answer = "OK, I stop follow you."
-            return NLPServiceResponse(answer, False)
+            self.publisher.publish(answer)
+            return
 
         if "Here is" in text:
             # 現在位置の場所の登録
@@ -70,7 +74,8 @@ class NavigationNLP:
                     answer = "Error, not find location node."
 
             answer = "OK, Here is the {}.".format(location_name)
-            return NLPServiceResponse(answer, False)
+            self.publisher.publish(answer)
+            return
 
         if "Please go to" in text:
             # 指定場所への移動命令
@@ -93,9 +98,11 @@ class NavigationNLP:
                         answer = "Sorry, I don't know where {} is.".format(location_name)
                 except rospy.ROSException:
                     answer = "Error, not find location node."
-            return NLPServiceResponse(answer, False)
+            self.publisher.publish(answer)
+            return
 
-        return NLPServiceResponse("", False)
+        self.publisher.publish("")
+        return
 
     def answer_current_location(self):
         # type: () -> str
