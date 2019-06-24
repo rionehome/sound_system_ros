@@ -29,7 +29,7 @@ class Main:
         self.log = open(log_file, "a")
 
         rospy.init_node("sound_system", anonymous=False)
-        rospy.Service("/sound_system/speak", StringService, self.to_speak)
+        # rospy.Service("/sound_system/speak", StringService, self.to_speak)
 
         # トピック名を設定
         self.hotword_topic = "/hotword/detect"
@@ -87,6 +87,7 @@ class Main:
         self.log.write("{}\n".format(text))
         self.log.flush()
 
+    '''
     def to_speak(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse
         """
@@ -99,6 +100,7 @@ class Main:
         if text:
             self.svox.speak(text)
         return StringServiceResponse()
+    '''
 
 
 if __name__ == "__main__":

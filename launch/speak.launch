@@ -1,0 +1,6 @@
+<launch>
+
+  <node pkg="sound_system" name="speak" type="speak.py" output="screen">
+  </node>
+
+</launch>
