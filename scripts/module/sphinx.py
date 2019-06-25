@@ -114,7 +114,6 @@ class Sphinx:
             pass
         result = self.result
         self.result = None
-        self.result_pub.publish(result)     # <-削除予定
         return StringServiceResponse(result)
 
     def multi_thread(self):
@@ -139,6 +138,7 @@ class Sphinx:
                         self.pause()
                         self.start = False
                         self.result = text
+                        self.result_pub.publish(self.result)  # <-削除予定
                         break
                     else:
                         print("**noise**")
