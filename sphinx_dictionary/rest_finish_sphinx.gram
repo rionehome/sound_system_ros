@@ -1,0 +1,4 @@
+#JSGF V1.0;
+grammar rest_finish_sphinx;
+public <rule> = <command>;
+<command> = wait | stop | stop the test | yes | no;
