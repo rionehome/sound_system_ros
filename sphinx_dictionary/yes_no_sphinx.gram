@@ -1,0 +1,4 @@
+#JSGF V1.0;
+grammar yes_no_sphinx;
+public <rule> = <command>;
+<command> = yes | no;
