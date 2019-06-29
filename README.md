@@ -50,4 +50,22 @@ Hotwordは「Hey Ducker」
 動かすときは「Hey Ducker」で起動させ、その後目的の命令を話すという形式
 
 ## Node
+**`name` sphinx**
+
+### Subscribe Topic
+* **`/sound_system/sphinx/dict`** 音声認識の設定を受け取る(std_msgs/String)
+
+* **`/sound_system/sphinx/gram`** 音声認識の設定を受け取る(std_msgs/String)
+
+* **`/sound_system/recognition_start`** 音声認識の開始を受け取る(std_msgs/Bool)
+
+### Publish Topic
+* **`/sound_system/recognition_result`** 音声認識結果を送信(std_msgs/String)
+
 **`name` sound_system**
+
+**`name` speak**
+
+### Service
+
+* **`/sound_system/speak`** 発話（ sound_system/StringService ）
