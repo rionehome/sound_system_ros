@@ -1,0 +1,4 @@
+#JSGF V1.0;
+grammar spr_sound;
+public <rule> = <command>;
+<command> = start game;

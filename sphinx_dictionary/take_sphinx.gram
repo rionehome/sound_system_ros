@@ -1,0 +1,6 @@
+#JSGF V1.0;
+grammar take_sphinx;
+public <rule> = <command> <place> | <noise>;
+<command> = take this bag to the;
+<place> = sofa | kitchen | bed | book-shelf | side-shelf | living-rack;
+<noise> =  a | b | c | d | e | f | so | or | ka | ki | k | b | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u;
