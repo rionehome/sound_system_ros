@@ -1,0 +1,4 @@
+#JSGF V1.0;
+grammar spr_sample_sphinx;
+public <rule> = <command>;
+<command> = what is this event | what is your name | what day is it today | how are you | do you like japanese;
