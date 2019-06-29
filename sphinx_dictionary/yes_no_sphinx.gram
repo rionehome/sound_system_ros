@@ -1,4 +1,5 @@
 #JSGF V1.0;
 grammar yes_no_sphinx;
-public <rule> = <command>;
+public <rule> = <command> | <noise>;
 <command> = yes | no;
+<noise> =  a | b | c | d | e | f | so | or | ka | ki | k | b | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u;

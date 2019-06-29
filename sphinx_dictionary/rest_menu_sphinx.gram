@@ -1,7 +1,8 @@
 #JSGF V1.0;
 grammar menu_sphinx;
-public <rule> = [<sentence>] (<food> <and> <food> | <bevarage>);
+public <rule> = ([<sentence>] (<food> <and> <food> | <bevarage>)) | <noise>;
 <sentence> = I want | please;
 <food> = noodles | peanuts | potato | apple;
 <and> = and | with;
 <bevarage> = cola | coffee | juice | soda; 
+<noise> =  a | b | c | d | e | f | so | or | ka | ki | k | b | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u;
