@@ -138,11 +138,13 @@ class Sphinx:
         while True:
             # 音声認識の命令が来るまで待機
             if self.start:
+                print "start"
                 self.resume()
+                print "resumed"
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
-                    if score > 0.1 and text not in self.noise_words:
+                    if score > 0.1 and str(text) not in self.noise_words:
                         text = str(text)
                         # self.pub.publish(text)  # 音声認識の結果をpublish
                         # self.pause()
