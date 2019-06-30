@@ -83,6 +83,8 @@ class Sphinx:
         :return:
         """
         self.gram = message.data
+        # noiseになるwordをリストアップ
+        self.noise_words = self.read_noise_word()
     
     def resume(self):
         """
@@ -137,22 +139,18 @@ class Sphinx:
             # 音声認識の命令が来るまで待機
             if self.start:
                 self.se.play(self.se.START)  # beep
-                print "start"
                 self.resume()
-                print "resumed"
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
                     if score > 0.1 and str(text) not in self.noise_words:
                         text = str(text)
                         # self.pub.publish(text)  # 音声認識の結果をpublish
-                        # self.pause()
                         self.pause()
                         self.start = False
                         self.result = text
                         self.log_heard_pub.publish(text)
                         self.result_pub.publish(self.result)  # <-削除予定
-                        print "break"
                         self.se.play(self.se.STOP)  # beep
                         break
                     else:
