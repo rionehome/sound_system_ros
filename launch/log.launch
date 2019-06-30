@@ -1,6 +1,3 @@
 <launch>
-
-  <node pkg="sound_system" name="speak" type="speak.py" output="screen">
-  </node>
-
+  <node pkg="sound_system" name="log" type="log.py" output="screen"/>
 </launch>
