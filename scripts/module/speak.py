@@ -17,12 +17,8 @@ class Main:
         rospy.Service("/sound_system/speak", StringService, self.speak_callback)
         self.log_spoke_pub = rospy.Publisher("/sound_system/log/spoke", String, queue_size=10)
         
-        def signal_handler(signal, frame):
-            self.thread_stop.set()
-            self.thread_stop.wait()
-            sys.exit()
-        
-        signal.signal(signal.SIGINT, signal_handler)
+        # ctrl+cをキャッチ
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         
         rospy.spin()
     

@@ -17,7 +17,6 @@ class Sphinx:
     def __init__(self):
         
         rospy.init_node("sphinx")
-        
         # ctrl+cをキャッチ
         signal.signal(signal.SIGINT, signal.SIG_DFL)
         
@@ -122,8 +121,6 @@ class Sphinx:
         while not self.result:
             pass
         result = self.result
-        # log書き込み
-        self.log_heard_pub.publish(self.result)
         self.result = None
         return StringServiceResponse(result)
     
@@ -147,11 +144,11 @@ class Sphinx:
                         text = str(text)
                         # self.pub.publish(text)  # 音声認識の結果をpublish
                         self.pause()
+                        self.se.play(self.se.STOP)  # beep
                         self.start = False
                         self.result = text
                         self.log_heard_pub.publish(text)
                         self.result_pub.publish(self.result)  # <-削除予定
-                        self.se.play(self.se.STOP)  # beep
                         break
                     else:
                         print("**noise**")

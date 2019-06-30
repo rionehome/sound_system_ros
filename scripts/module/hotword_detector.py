@@ -9,23 +9,19 @@ from se import SE
 
 
 class HotwordDetector:
-
+    
     def __init__(self):
         self.interrupted = False
         self.model = rospkg.RosPack().get_path('sound_system') + "/model/Hey_Ducker.pmdl"
         self.detector = snowboydecoder.HotwordDetector(self.model, sensitivity=0.5)
         self.se = SE()
+        # ctrl+cをキャッチ
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         self.init_ros()
-
+    
     def init_ros(self):
         rospy.init_node('sound_system', anonymous=False)
-
-        def signal_handler(signal, frame):
-            self.detector.terminate()
-            sys.exit()
-
-        signal.signal(signal.SIGINT, signal_handler)
-
+        
         def hotword_detect(request):
             """
             Hotwordの検出を行う
@@ -39,7 +35,7 @@ class HotwordDetector:
                 self.se.play(self.se.WAKEUP)
                 print("Hotword 検出")
             return HotwordServiceResponse()
-
+        
         rospy.Service("/hotword/detect", HotwordService, hotword_detect)
         rospy.spin()
 
