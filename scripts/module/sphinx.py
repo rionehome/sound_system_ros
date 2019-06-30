@@ -116,7 +116,6 @@ class Sphinx:
         :param message:
         :return:
         """
-        self.se.play(self.se.START)  # beep
         self.start = True
         while not self.result:
             pass
@@ -124,7 +123,6 @@ class Sphinx:
         # log書き込み
         self.log_heard_pub.publish(self.result)
         self.result = None
-        self.se.play(self.se.STOP)  # beep
         return StringServiceResponse(result)
     
     def multi_thread(self):
@@ -138,6 +136,7 @@ class Sphinx:
         while True:
             # 音声認識の命令が来るまで待機
             if self.start:
+                self.se.play(self.se.START)  # beep
                 print "start"
                 self.resume()
                 print "resumed"
@@ -153,6 +152,8 @@ class Sphinx:
                         self.result = text
                         self.log_heard_pub.publish(text)
                         self.result_pub.publish(self.result)  # <-削除予定
+                        print "break"
+                        self.se.play(self.se.STOP)  # beep
                         break
                     else:
                         print("**noise**")

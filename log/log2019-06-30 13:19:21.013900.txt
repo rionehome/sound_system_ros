@@ -1,0 +1,6 @@
+2019-06-30 13:21:26.647729	robot heard:stop following me
+2019-06-30 13:22:05.097814	robot heard:no
+2019-06-30 13:22:34.106388	robot heard:follow me
+2019-06-30 13:22:42.263195	robot heard:no
+2019-06-30 13:23:02.514732	robot heard:follow me
+2019-06-30 13:23:11.587048	robot heard:follow me
