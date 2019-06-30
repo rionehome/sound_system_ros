@@ -2,4 +2,4 @@
 grammar follow_me_sphinx;
 public <rule> = <command> | <noise>;
 <command> = [follow me | stop following me | here is the car| yes | no];
-<noise> =  a | b | c | d | e | f | or | ka | ki | g | h | i | j | k | l | m | n | p | q | r | s | t | u;
+<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
