@@ -142,7 +142,7 @@ class Sphinx:
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
-                    if score > 0.1 or text not in self.noise_words:
+                    if score > 0.1 and text not in self.noise_words:
                         text = str(text)
                         # self.pub.publish(text)  # 音声認識の結果をpublish
                         # self.pause()
