@@ -6,7 +6,6 @@ import rospy
 import rospkg
 from std_msgs.msg import String, Bool
 import os
-import sys
 from pocketsphinx import LiveSpeech
 from sound_system.srv import *
 import signal
@@ -41,6 +40,8 @@ class Sphinx:
         rospy.Subscriber("/sound_system/sphinx/dict", String, self.change_dict)
         rospy.Subscriber("/sound_system/sphinx/gram", String, self.change_gram)
         self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
+        # noiseになるwordをリストアップ
+        self.noise_words = self.read_noise_word()
         
         # <削除予定> <ここから> Serviceに全て移行して欲しいが不可能なのでとりあえず用意、使用は非推奨
         rospy.Subscriber("/sound_system/recognition_start", Bool, self.recognition_start)
@@ -48,6 +49,20 @@ class Sphinx:
         # <削除予定> <ここまで> Serviceに全て移行して欲しいが不可能なのでとりあえず用意、使用は非推奨
         
         self.multi_thread()
+    
+    def read_noise_word(self):
+        words = []
+        with open(os.path.join(self.dictionary_path, self.gram)) as f:
+            for line in f.readlines():
+                if "<noise>" not in line:
+                    continue
+                if "<rule>" in line:
+                    continue
+                words = line.replace("<noise>", "").replace("=", "").replace(" ", "").replace("\n", "").replace(";",
+                                                                                                                "").split(
+                    "|")
+                print(words)
+        return words
     
     def change_dict(self, message):
         # type: (String) -> None
@@ -101,7 +116,7 @@ class Sphinx:
         :param message:
         :return:
         """
-        #self.se.play(self.se.START)  # beep
+        self.se.play(self.se.START)  # beep
         self.start = True
         while not self.result:
             pass
@@ -109,7 +124,7 @@ class Sphinx:
         # log書き込み
         self.log_heard_pub.publish(self.result)
         self.result = None
-        #self.se.play(self.se.STOP)  # beep
+        self.se.play(self.se.STOP)  # beep
         return StringServiceResponse(result)
     
     def multi_thread(self):
@@ -127,7 +142,7 @@ class Sphinx:
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
-                    if score > 0.1:
+                    if score > 0.1 or text not in self.noise_words:
                         text = str(text)
                         # self.pub.publish(text)  # 音声認識の結果をpublish
                         # self.pause()

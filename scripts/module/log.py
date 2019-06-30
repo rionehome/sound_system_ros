@@ -15,8 +15,11 @@ class Log:
         rospy.Subscriber("/sound_system/log/spoke", String, self.spoke_callback)
         rospy.Subscriber("/sound_system/log/heard", String, self.heard_callback)
         
-        self.path = os.path.dirname(os.path.abspath(__file__))
-        self.log_path = "{}/{}".format(rospkg.RosPack().get_path('sound_system'), "log")
+        self.log_path = "{}/{}/".format(rospkg.RosPack().get_path('sound_system'), "log")
+        # logフォルダ生成
+        if not os.path.exists(self.log_path):
+            os.mkdir(self.log_path)
+        
         self.log_file_name = "log{}.txt".format(datetime.datetime.now())
     
     def spoke_callback(self, msg):
