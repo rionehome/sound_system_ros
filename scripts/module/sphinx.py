@@ -10,7 +10,7 @@ import sys
 from pocketsphinx import LiveSpeech
 from sound_system.srv import *
 import signal
-import se
+from se import SE
 
 
 class Sphinx:
@@ -19,7 +19,10 @@ class Sphinx:
         
         rospy.init_node("sphinx")
         
-        self.beep = se.SE()
+        # ctrl+cをキャッチ
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        
+        self.se = SE()
         
         # sphinxの設定をlaunchのパラメーターから取得
         self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
@@ -34,8 +37,6 @@ class Sphinx:
         self.start = False
         self.result = None
         
-        self.set_signal()
-        
         rospy.Service("/sound_system/recognition", StringService, self.recognition)
         rospy.Subscriber("/sound_system/sphinx/dict", String, self.change_dict)
         rospy.Subscriber("/sound_system/sphinx/gram", String, self.change_gram)
@@ -47,19 +48,6 @@ class Sphinx:
         # <削除予定> <ここまで> Serviceに全て移行して欲しいが不可能なのでとりあえず用意、使用は非推奨
         
         self.multi_thread()
-    
-    def set_signal(self):
-        """
-        CTRL+Cでのプロセス停止の設定
-        :return:
-        """
-        
-        def exit(signal, frame):
-            print("\n process exit [PID=%d]" % self.process.pid)
-            self.process.kill()
-            sys.exit(0)
-        
-        signal.signal(signal.SIGINT, exit)
     
     def change_dict(self, message):
         # type: (String) -> None
@@ -113,7 +101,7 @@ class Sphinx:
         :param message:
         :return:
         """
-        self.beep.play("start")  # beep
+        #self.se.play(self.se.START)  # beep
         self.start = True
         while not self.result:
             pass
@@ -121,7 +109,7 @@ class Sphinx:
         # log書き込み
         self.log_heard_pub.publish(self.result)
         self.result = None
-        self.beep.play("stop")  # beep
+        #self.se.play(self.se.STOP)  # beep
         return StringServiceResponse(result)
     
     def multi_thread(self):

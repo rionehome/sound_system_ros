@@ -1,16 +1,16 @@
 import rospkg
 import subprocess
 
+PATH = rospkg.RosPack().get_path('sound_system') + "/SE"
+
 
 class SE:
     def __init__(self):
-        self.path = rospkg.RosPack().get_path('sound_system') + "/SE"
-        self.wakeup = self.path + "/" + "wakeup.wav"
-        self.start = self.path + "/" + "start.wav"
-        self.stop = self.path + "/" + "stop.wav"
-        self.sound_list = {"wakeup": self.wakeup, "start": self.start, "stop": self.stop}
+        self.WAKEUP = PATH + "/" + "wakeup.wav"
+        self.START = PATH + "/" + "start.wav"
+        self.STOP = PATH + "/" + "stop.wav"
     
-    def play(self, se):
+    @staticmethod
+    def play(se):
         # type: (str) -> None
-        if se in self.sound_list:
-            subprocess.call(["aplay", self.sound_list[se]], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.call(["aplay", se], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
