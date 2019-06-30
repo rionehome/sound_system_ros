@@ -3,16 +3,13 @@
 
 import subprocess
 import rospkg
-import rospy
-from sound_system.srv import *
-from std_msgs.msg import Bool
 
 
 class Svox:
-
+    
     def __init__(self):
         self.file = rospkg.RosPack().get_path('sound_system') + "/voice/voice.wav"
-
+    
     def speak(self, text):
         """
         :param text: SVOXに喋らせる言葉をStringで投げる

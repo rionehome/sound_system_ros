@@ -6,57 +6,63 @@ import rospy
 import rospkg
 from std_msgs.msg import String, Bool
 import os
-import sys
 from pocketsphinx import LiveSpeech
 from sound_system.srv import *
 import signal
+from se import SE
 
 
 class Sphinx:
-
+    
     def __init__(self):
-
+        
         rospy.init_node("sphinx")
-
+        # ctrl+cをキャッチ
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        
+        self.se = SE()
+        
         # sphinxの設定をlaunchのパラメーターから取得
         self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
         self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()))
-
+        
         # 音響モデルのディレクトリの絶対パス
         self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
         # 辞書のディレクトリの絶対パス
         self.dictionary_path = "{}/{}".format(rospkg.RosPack().get_path('sound_system'), "sphinx_dictionary")
-
+        
         self.speech = None
         self.start = False
         self.result = None
-
-        self.set_signal()
-
+        
         rospy.Service("/sound_system/recognition", StringService, self.recognition)
         rospy.Subscriber("/sound_system/sphinx/dict", String, self.change_dict)
         rospy.Subscriber("/sound_system/sphinx/gram", String, self.change_gram)
-
+        self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
+        # noiseになるwordをリストアップ
+        self.noise_words = self.read_noise_word()
+        
         # <削除予定> <ここから> Serviceに全て移行して欲しいが不可能なのでとりあえず用意、使用は非推奨
         rospy.Subscriber("/sound_system/recognition_start", Bool, self.recognition_start)
         self.result_pub = rospy.Publisher("/sound_system/recognition_result", String, queue_size=10)
         # <削除予定> <ここまで> Serviceに全て移行して欲しいが不可能なのでとりあえず用意、使用は非推奨
-
+        
         self.multi_thread()
-
-    def set_signal(self):
-        """
-        CTRL+Cでのプロセス停止の設定
-        :return:
-        """
-
-        def exit(signal, frame):
-            print("\n process exit [PID=%d]" % self.process.pid)
-            self.process.kill()
-            sys.exit(0)
-
-        signal.signal(signal.SIGINT, exit)
-
+    
+    def read_noise_word(self):
+        words = []
+        with open(os.path.join(self.dictionary_path, self.gram)) as f:
+            for line in f.readlines():
+                if "<noise>" not in line:
+                    continue
+                if "<rule>" in line:
+                    continue
+                words = line.replace("<noise>", "").replace("=", "").replace(" ", "").replace("\n", "").replace(";",
+                                                                                                                "").split(
+                    "|")
+                print(words)
+        return words
+    
     def change_dict(self, message):
         # type: (String) -> None
         """
@@ -66,7 +72,7 @@ class Sphinx:
         :return:
         """
         self.dict = message.data
-
+    
     def change_gram(self, message):
         # type: (String) -> None
         """
@@ -76,7 +82,9 @@ class Sphinx:
         :return:
         """
         self.gram = message.data
-
+        # noiseになるwordをリストアップ
+        self.noise_words = self.read_noise_word()
+    
     def resume(self):
         """
         音声認識の再開
@@ -90,7 +98,7 @@ class Sphinx:
             dic=os.path.join(self.dictionary_path, self.dict),
             jsgf=os.path.join(self.dictionary_path, self.gram)
         )
-
+    
     def pause(self):
         """
         音声認識の一時停止
@@ -98,7 +106,7 @@ class Sphinx:
         """
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
-
+    
     def recognition(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse
         """
@@ -115,7 +123,7 @@ class Sphinx:
         result = self.result
         self.result = None
         return StringServiceResponse(result)
-
+    
     def multi_thread(self):
         """
         マルチスレッド
@@ -127,22 +135,24 @@ class Sphinx:
         while True:
             # 音声認識の命令が来るまで待機
             if self.start:
+                self.se.play(self.se.START)  # beep
                 self.resume()
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
-                    if score > 0.1:
+                    if score > 0.1 and str(text) not in self.noise_words:
                         text = str(text)
                         # self.pub.publish(text)  # 音声認識の結果をpublish
-                        # self.pause()
                         self.pause()
+                        self.se.play(self.se.STOP)  # beep
                         self.start = False
                         self.result = text
+                        self.log_heard_pub.publish(text)
                         self.result_pub.publish(self.result)  # <-削除予定
                         break
                     else:
                         print("**noise**")
-
+    
     def recognition_start(self, message):
         # type: (Bool) -> None
         """

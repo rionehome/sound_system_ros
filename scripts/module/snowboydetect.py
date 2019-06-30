@@ -5,10 +5,8 @@
 # the SWIG interface file instead.
 
 
-
-
-
 from sys import version_info as _swig_python_version_info
+
 if _swig_python_version_info >= (2, 7, 0):
     def swig_import_helper():
         import importlib
@@ -18,6 +16,8 @@ if _swig_python_version_info >= (2, 7, 0):
             return importlib.import_module(mname)
         except ImportError:
             return importlib.import_module('_snowboydetect')
+    
+    
     _snowboydetect = swig_import_helper()
     del swig_import_helper
 elif _swig_python_version_info >= (2, 6, 0):
@@ -36,6 +36,8 @@ elif _swig_python_version_info >= (2, 6, 0):
             finally:
                 fp.close()
             return _mod
+    
+    
     _snowboydetect = swig_import_helper()
     del swig_import_helper
 else:
@@ -47,9 +49,10 @@ except NameError:
     pass  # Python < 2.2 doesn't have 'property'.
 
 try:
-    import builtins as __builtin__
+    import __builtin__ as __builtin__
 except ImportError:
     import __builtin__
+
 
 def _swig_setattr_nondynamic(self, class_type, name, value, static=1):
     if (name == "thisown"):
@@ -90,13 +93,17 @@ def _swig_repr(self):
         strthis = ""
     return "<%s.%s; %s >" % (self.__class__.__module__, self.__class__.__name__, strthis,)
 
+
 try:
     _object = object
     _newclass = 1
 except __builtin__.Exception:
     class _object:
         pass
+    
+    
     _newclass = 0
+
 
 class SnowboyDetect(_object):
     __swig_setmethods__ = {}
@@ -104,53 +111,57 @@ class SnowboyDetect(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, SnowboyDetect, name)
     __repr__ = _swig_repr
-
+    
     def __init__(self, resource_filename, model_str):
         this = _snowboydetect.new_SnowboyDetect(resource_filename, model_str)
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-
+    
     def Reset(self):
         return _snowboydetect.SnowboyDetect_Reset(self)
-
+    
     def RunDetection(self, *args):
         return _snowboydetect.SnowboyDetect_RunDetection(self, *args)
-
+    
     def SetSensitivity(self, sensitivity_str):
         return _snowboydetect.SnowboyDetect_SetSensitivity(self, sensitivity_str)
-
+    
     def SetHighSensitivity(self, high_sensitivity_str):
         return _snowboydetect.SnowboyDetect_SetHighSensitivity(self, high_sensitivity_str)
-
+    
     def GetSensitivity(self):
         return _snowboydetect.SnowboyDetect_GetSensitivity(self)
-
+    
     def SetAudioGain(self, audio_gain):
         return _snowboydetect.SnowboyDetect_SetAudioGain(self, audio_gain)
-
+    
     def UpdateModel(self):
         return _snowboydetect.SnowboyDetect_UpdateModel(self)
-
+    
     def NumHotwords(self):
         return _snowboydetect.SnowboyDetect_NumHotwords(self)
-
+    
     def ApplyFrontend(self, apply_frontend):
         return _snowboydetect.SnowboyDetect_ApplyFrontend(self, apply_frontend)
-
+    
     def SampleRate(self):
         return _snowboydetect.SnowboyDetect_SampleRate(self)
-
+    
     def NumChannels(self):
         return _snowboydetect.SnowboyDetect_NumChannels(self)
-
+    
     def BitsPerSample(self):
         return _snowboydetect.SnowboyDetect_BitsPerSample(self)
+    
     __swig_destroy__ = _snowboydetect.delete_SnowboyDetect
     __del__ = lambda self: None
+
+
 SnowboyDetect_swigregister = _snowboydetect.SnowboyDetect_swigregister
 SnowboyDetect_swigregister(SnowboyDetect)
+
 
 class SnowboyVad(_object):
     __swig_setmethods__ = {}
@@ -158,39 +169,40 @@ class SnowboyVad(_object):
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, SnowboyVad, name)
     __repr__ = _swig_repr
-
+    
     def __init__(self, resource_filename):
         this = _snowboydetect.new_SnowboyVad(resource_filename)
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-
+    
     def Reset(self):
         return _snowboydetect.SnowboyVad_Reset(self)
-
+    
     def RunVad(self, *args):
         return _snowboydetect.SnowboyVad_RunVad(self, *args)
-
+    
     def SetAudioGain(self, audio_gain):
         return _snowboydetect.SnowboyVad_SetAudioGain(self, audio_gain)
-
+    
     def ApplyFrontend(self, apply_frontend):
         return _snowboydetect.SnowboyVad_ApplyFrontend(self, apply_frontend)
-
+    
     def SampleRate(self):
         return _snowboydetect.SnowboyVad_SampleRate(self)
-
+    
     def NumChannels(self):
         return _snowboydetect.SnowboyVad_NumChannels(self)
-
+    
     def BitsPerSample(self):
         return _snowboydetect.SnowboyVad_BitsPerSample(self)
+    
     __swig_destroy__ = _snowboydetect.delete_SnowboyVad
     __del__ = lambda self: None
+
+
 SnowboyVad_swigregister = _snowboydetect.SnowboyVad_swigregister
 SnowboyVad_swigregister(SnowboyVad)
 
 # This file is compatible with both classic and new-style classes.
-
-

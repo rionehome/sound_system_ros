@@ -43,14 +43,14 @@ def no_alsa_error():
 
 class RingBuffer(object):
     """Ring buffer to hold audio from PortAudio"""
-
+    
     def __init__(self, size=4096):
         self._buf = collections.deque(maxlen=size)
-
+    
     def extend(self, data):
         """Adds data to the end of buffer"""
         self._buf.extend(data)
-
+    
     def get(self):
         """Retrieves data from the beginning of buffer and clears it"""
         tmp = bytes(bytearray(self._buf))
@@ -95,13 +95,13 @@ class HotwordDetector(object):
     :param audio_gain: multiply input volume by this factor.
     :param apply_frontend: applies the frontend processing algorithm if True.
     """
-
+    
     def __init__(self, decoder_model,
                  resource=RESOURCE_FILE,
                  sensitivity=[],
                  audio_gain=1,
                  apply_frontend=False):
-
+        
         tm = type(decoder_model)
         ts = type(sensitivity)
         if tm is not list:
@@ -109,13 +109,13 @@ class HotwordDetector(object):
         if ts is not list:
             sensitivity = [sensitivity]
         model_str = ",".join(decoder_model)
-
+        
         self.detector = snowboydetect.SnowboyDetect(
             resource_filename=resource.encode(), model_str=model_str.encode())
         self.detector.SetAudioGain(audio_gain)
         self.detector.ApplyFrontend(apply_frontend)
         self.num_hotwords = self.detector.NumHotwords()
-
+        
         if len(decoder_model) > 1 and len(sensitivity) == 1:
             sensitivity = sensitivity * self.num_hotwords
         if len(sensitivity) != 0:
@@ -125,10 +125,10 @@ class HotwordDetector(object):
         sensitivity_str = ",".join([str(t) for t in sensitivity])
         if len(sensitivity) != 0:
             self.detector.SetSensitivity(sensitivity_str.encode())
-
+        
         self.ring_buffer = RingBuffer(
             self.detector.NumChannels() * self.detector.SampleRate() * 5)
-
+    
     def start(self, detected_callback=play_audio_file,
               interrupt_check=lambda: False,
               sleep_time=0.03,
@@ -162,12 +162,12 @@ class HotwordDetector(object):
         :return: None
         """
         self._running = True
-
+        
         def audio_callback(in_data, frame_count, time_info, status):
             self.ring_buffer.extend(in_data)
             play_data = chr(0) * len(in_data)
             return play_data, pyaudio.paContinue
-
+        
         with no_alsa_error():
             self.audio = pyaudio.PyAudio()
         self.stream_in = self.audio.open(
@@ -178,23 +178,23 @@ class HotwordDetector(object):
             rate=self.detector.SampleRate(),
             frames_per_buffer=2048,
             stream_callback=audio_callback)
-
+        
         if interrupt_check():
             logger.debug("detect voice return")
             return
-
+        
         tc = type(detected_callback)
         if tc is not list:
             detected_callback = [detected_callback]
         if len(detected_callback) == 1 and self.num_hotwords > 1:
             detected_callback *= self.num_hotwords
-
+        
         assert self.num_hotwords == len(detected_callback), \
             "Error: hotwords in your models (%d) do not match the number of " \
             "callbacks (%d)" % (self.num_hotwords, len(detected_callback))
-
+        
         logger.debug("detecting...")
-
+        
         state = "PASSIVE"
         while self._running is True:
             if interrupt_check():
@@ -204,13 +204,13 @@ class HotwordDetector(object):
             if len(data) == 0:
                 time.sleep(sleep_time)
                 continue
-
+            
             status = self.detector.RunDetection(data)
             if status == -1:
                 logger.warning("Error initializing streams or reading audio data")
-
+            
             # small state machine to handle recording of phrase after keyword
-
+            
             if state == "PASSIVE":
                 if status > 0:  # key word found
                     self.recordedData = []
@@ -233,26 +233,26 @@ class HotwordDetector(object):
                         silentCount = silentCount + 1
                 elif status == 0:  # voice found
                     silentCount = 0
-
+                
                 if stopRecording == True:
                     fname = self.saveMessage()
                     audio_recorder_callback(fname)
                     state = "PASSIVE"
                     continue
-
+                
                 recordingCount = recordingCount + 1
                 self.recordedData.append(data)
-
+        
         logger.debug("finished.")
         return False
-
+    
     def saveMessage(self):
         """
         Save the message stored in self.recordedData to a timestamped file.
         """
         filename = 'output' + str(int(time.time())) + '.wav'
         data = b''.join(self.recordedData)
-
+        
         # use wave to save data
         wf = wave.open(filename, 'wb')
         wf.setnchannels(1)
@@ -264,7 +264,7 @@ class HotwordDetector(object):
         wf.close()
         logger.debug("finished saving: " + filename)
         return filename
-
+    
     def terminate(self):
         """
         Terminate audio stream. Users can call start() again to detect.
