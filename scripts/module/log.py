@@ -20,12 +20,14 @@ class Log:
         self.log_file_name = "log{}.txt".format(datetime.datetime.now())
     
     def spoke_callback(self, msg):
+        # type:(String)->None
         with open(self.log_path + self.log_file_name, "a") as f:
-            f.write(str(datetime.datetime.now()) + "\t" + "robot spoke:" + msg + "\n")
+            f.write(str(datetime.datetime.now()) + "\t" + "robot spoke:" + msg.data + "\n")
     
     def heard_callback(self, msg):
+        # type:(String)->None
         with open(self.log_path + self.log_file_name, "a") as f:
-            f.write(str(datetime.datetime.now()) + "\t" + "robot heard:" + msg + "\n")
+            f.write(str(datetime.datetime.now()) + "\t" + "robot heard:" + msg.data + "\n")
 
 
 if __name__ == '__main__':
