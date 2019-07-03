@@ -2,6 +2,6 @@
 grammar test_sphinx;
 public <rule> = <command> | <command2> <place> | <noise>;
 <command> = follow me | stop following me | yes | no;
-<command2> = Here is the | Please go to the;
+<command2> = Here is the | Please go to the | Where are you;
 <place> = living_room | dining_room | dining_chair | dining_table | living_table | sofa | entrance | car;
 <noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
