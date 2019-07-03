@@ -34,6 +34,7 @@ class Main:
         # ログ書き込み
         self.log_spoke_pub.publish(text)
         if text:
+            text = text.replace("_", " ")
             self.svox.speak(text)
         return StringServiceResponse()
 
