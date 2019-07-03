@@ -2,4 +2,4 @@
 grammar spr_sample_sphinx;
 public <rule> = <command> | <noise>;
 <command> = what is this event | what is your name | what day is it today | how are you | do you like japanese;
-<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
+<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | a | i | u | e | o | ka | ki | ku | ke | ko | sa | si | su | se | so | ta | ti | tu | te | to | na | ni | nu | ne | no | ha | hi | hu | he | ho | ma | mi | mu | me | mo | ya | tu | yu | yo | ra | ru | re | ro | wa | wo | wu | la | li | lu | le | lo;
