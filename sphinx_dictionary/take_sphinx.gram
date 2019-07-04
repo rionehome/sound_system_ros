@@ -2,5 +2,5 @@
 grammar take_sphinx;
 public <rule> = <command> <place> | <noise>;
 <command> = take this bag to the;
-<place> = living_room | dining_room | dining_chair | dining_table | living_table | sofa | entrance;
+<place> = kitchen | bed_room | living_room;
 <noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;

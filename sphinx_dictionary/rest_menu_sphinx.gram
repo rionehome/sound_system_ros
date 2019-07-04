@@ -2,7 +2,7 @@
 grammar menu_sphinx;
 public <rule> = ([<sentence>] (<food> <and> <food> | <bevarage>)) | <noise>;
 <sentence> = I want | please;
-<food> = noodles | peanuts | potato | apple;
+<food> = instant_noodle | baked_bean | tuna | jelly | nutella | pringles;
 <and> = and | with;
-<bevarage> = cola | coffee | juice | soda; 
+<bevarage> = tea | orange_juice | pepsi;
 <noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
