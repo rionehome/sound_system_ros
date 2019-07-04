@@ -26,16 +26,21 @@
   </node>
 
   <node pkg="location" name="location" type="location_manager.py" output="screen">
-  <param name="info_file" value="test3.txt"/>
+  <!--param name="info_file" value="test3.txt"/-->
   </node>
 
 
-  <!--node pkg="follow_me" name="Follow" respawn="true" output="screen" type="Follow"/>
+  <node pkg="follow_me" name="Follow" respawn="true" output="screen" type="Follow"/>
   <node pkg="move" name="MovementVelocityDesignation" output="screen" respawn="false" type="MovementVelocityDesignation"/>
 
   <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
   <include file="$(find turtlebot_custom)/launch/lidar.launch"/>
   <include file="$(find turtlebot_custom)/launch/gmapping_lidar.launch"/>
-  <include file="$(find turtlebot_custom)/launch/rviz.launch"/-->
+  <include file="$(find turtlebot_custom)/launch/rviz.launch"/>
+
+  <node pkg="sound_system" name="speak" type="speak.py" output="screen">
+  </node>
+
+  <node pkg="emergency_stop" name="main" output="screen" type="main.py"/>
 
 </launch>
