@@ -5,4 +5,4 @@ public <rule> = ([<sentence>] (<food> <and> <food> | <bevarage>)) | <noise>;
 <food> = instant_noodle | baked_bean | tuna | jelly | nutella | pringles;
 <and> = and | with;
 <bevarage> = tea | orange_juice | pepsi;
-<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
+<noise> = a | b | c | d | e | f | g | h | j | k | l | m | n | p | q | r | s | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
