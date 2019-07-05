@@ -4,7 +4,8 @@ about AH B AW T
 academy AH K AE D AH M IY
 adults AH D AH L T S
 adults(2) AE D AH L T S
-ai EY AY
+ai AY
+ai(2) EY AY
 all AO L
 an AE N
 an(2) AH N
@@ -15,6 +16,7 @@ apple AE P AH L
 are AA R
 are(2) ER
 at AE T
+australian AO S T R EY L Y AH N
 award AH W AO R D
 baked B EY K T
 be B IY
@@ -28,6 +30,7 @@ biggest B IH G AH S T
 black B L AE K
 blackberry B L AE K B EH R IY
 blue B L UW
+born B AO R N
 bot B AO T
 bottleneck B AA T AH L N EH K
 boy B OY
@@ -51,10 +54,12 @@ chair CH EH R
 chairs CH EH R Z
 chat CH AE T
 children CH IH L D R AH N
+city S IH T IY
 coin K OY N
 coined K OY N D
 color K AH L ER
 color(2) K AO L ER
+come K AH M
 comic K AA M IH K
 compiler K AH M P AY L ER
 computer K AH M P Y UW T ER
@@ -64,11 +69,13 @@ created K R IY EY T AH D
 created(2) K R IY EY T IH D
 crowd K R AW D
 cub K AH B
+date D EY T
+day D EY
 de D IY
-de(2) D EY
 desert D EH Z ER T
 desert(2) D IH Z ER T
 developed D IH V EH L AH P T
+did D IH D
 disk D IH S K
 do D UW
 does D AH Z
@@ -76,6 +83,7 @@ does(2) D IH Z
 doors D AO R Z
 dose D OW S
 down D AW N
+dreams D R IY M Z
 drinks D R IH NG K S
 driver D R AY V ER
 driving D R AY V IH NG
@@ -84,6 +92,8 @@ elders EH L D ER Z
 else EH L S
 engineering EH N JH AH N IH R IH NG
 entrance EH N T R AH N S
+event IH V EH N T
+event(2) IY V EH N T
 exported IH K S P AO R T AH D
 famous F EY M AH S
 female F IY M EY L
@@ -107,22 +117,30 @@ handsome HH AE N S AH M
 hard HH AA R D
 have HH AE V
 heaviest HH EH V IY AH S T
+here HH IY R
+hey HH EY
 holds HH OW L D Z
+home HH OW M
 hotel HH OW T EH L
 how HH AW
 humanity HH Y UW M AE N IH T IY
+humanity(2) Y UW M AE N IH T IY
 i AY
 ice AY S
 if IH F
 impact IH M P AE K T
 in IH N
 instant IH N S T AH N T
+interested IH N T R AH S T IH D
+interested(2) IH N T R IH S T IH D
 invaded IH N V EY D AH D
 invaded(2) IH N V EY D IH D
 invented IH N V EH N T AH D
 invented(2) IH N V EH N T IH D
 inventor IH N V EH N T ER
 is IH Z
+it IH T
+japanese JH AE P AH N IY Z
 jedi JH EH D IY
 jelly JH EH L IY
 juice JH UW S
@@ -135,6 +153,7 @@ language(2) L AE NG G W IH JH
 largest L AA R JH AH S T
 launched L AO N CH T
 lightest L AY T AH S T
+like L AY K
 living L IH V IH NG
 located L OW K EY T AH D
 located(2) L OW K EY D
@@ -201,6 +220,7 @@ program P R OW G R AE M
 programmer P R OW G R AE M ER
 programming P R OW G R AE M IH NG
 python P AY TH AA N
+r AA R
 record R AH K AO R D
 record(2) R EH K ER D
 red R EH D
@@ -224,6 +244,7 @@ smartphone S M AA R T F OW N
 snacks S N AE K S
 snow S N OW
 sofa S OW F AH
+sofas S OW F AH Z
 standing S T AE N D IH NG
 stands S T AE N D Z
 state S T EY T
@@ -231,7 +252,10 @@ stored S T AO R D
 street S T R IY T
 summer S AH M ER
 table T EY B AH L
+tables T EY B AH L Z
+taste T EY S T
 tea T IY
+team T IY M
 tell T EH L
 term T ER M
 test T EH S T
@@ -239,16 +263,20 @@ the DH AH
 the(2) DH IY
 there DH EH R
 think TH IH NG K
+this DH IH S
 threat TH R EH T
 three TH R IY
 time T AY M
 to T UW
 to(2) T IH
+today T AH D EY
+today(2) T UW D EY
 tons T AH N Z
 tron T R AA N
 tuna T UW N AH
 tuna(2) T Y UW N AH
 turning T ER N IH NG
+up AH P
 usa Y UW EH S EY
 use Y UW S
 use(2) Y UW Z
@@ -257,7 +285,9 @@ was W AA Z
 was(2) W AH Z
 wasn't W AA Z AH N T
 wasn't(2) W AH Z AH N T
+we W IY
 wearing W EH R IH NG
+weather W EH DH ER
 were W ER
 what W AH T
 what's W AH T S
@@ -287,6 +317,9 @@ year Y IH R
 yellow Y EH L OW
 you Y UW
 young Y AH NG
+your Y AO R
+your(2) Y UH R
+z Z IY
 zones Z OW N Z
 zoo Z UW
 zuckerberg Z AH K ER B ER G
@@ -313,7 +346,6 @@ lo L OW
 lu L UW
 ma M AA
 me M IY
-mi M IY
 mo M OW
 mu M UW
 n EH N
