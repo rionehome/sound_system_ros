@@ -3,4 +3,4 @@ grammar menu_sphinx;
 public <rule> = [<sentence>] <food> | <noise>;
 <sentence> = I want | please;
 <food> = instant_noodle | baked_bean | tuna | jelly | nutella | pringles | tea | orange_juice | pepsi;
-<noise> = a | b | c | d | e | f | g | h | j | k | l | m | n | p | q | r | s | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
+<noise> = a | b | c | d | e | f | g | h | j | k | l | m | n | p | q | r | s | u | v | w | s | y | z | ka | sa | ta | ha | ma | ya | ra | wa;
