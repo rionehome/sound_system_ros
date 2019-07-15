@@ -8,10 +8,8 @@ import rospy
 import rospkg
 from sound_system.srv import *
 
-from module.julius import Julius
 from module.sphinx import Sphinx
 from module.svox import Svox
-from std_msgs.msg import String
 import os
 
 
@@ -60,7 +58,7 @@ class Main:
                 print("Hotword 受信")
                 print("音声認識 開始")
                 rospy.wait_for_service(self.recognition_topic, timeout=1)
-                text = rospy.ServiceProxy(self.recognition_topic, StringService)().response
+                text = rospy.ServiceProxy(self.recognition_topic, RecognitionService)("follow_me_sphinx.dict", "follow_me_sphinx.gram").response
                 print("音声認識 終了")
                 # 認識内容のログ出力と表示
                 print(text)

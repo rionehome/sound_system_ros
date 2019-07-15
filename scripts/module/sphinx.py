@@ -10,45 +10,37 @@ from pocketsphinx import LiveSpeech
 from sound_system.srv import *
 import signal
 from se import SE
+from sound_system.msg import SphinxParam
 
 
 class Sphinx:
-    
+
     def __init__(self):
-        
         rospy.init_node("sphinx")
-        # ctrl+cをキャッチ
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
-        
+
         self.se = SE()
-        
-        # sphinxの設定をlaunchのパラメーターから取得
-        self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
-        self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()))
-        
-        # 音響モデルのディレクトリの絶対パス
-        self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
-        # 辞書のディレクトリの絶対パス
-        self.dictionary_path = "{}/{}".format(rospkg.RosPack().get_path('sound_system'), "sphinx_dictionary")
-        
+
         self.speech = None
         self.start = False
         self.result = None
-        
-        rospy.Service("/sound_system/recognition", StringService, self.recognition)
-        rospy.Subscriber("/sound_system/sphinx/dict", String, self.change_dict)
-        rospy.Subscriber("/sound_system/sphinx/gram", String, self.change_gram)
-        self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
-        # noiseになるwordをリストアップ
+
+        # 音響モデルのディレクトリの絶対パス と 辞書のディレクトリの絶対パス
+        self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
+        self.dictionary_path = "{}/{}".format(rospkg.RosPack().get_path('sound_system'), "sphinx_dictionary")
+
+        # sphinxの設定をlaunchのパラメーターから取得
+        self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
+        self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()))
         self.noise_words = self.read_noise_word()
-        
-        # <削除予定> <ここから> Serviceに全て移行して欲しいが不可能なのでとりあえず用意、使用は非推奨
-        rospy.Subscriber("/sound_system/recognition_start", Bool, self.recognition_start)
-        self.result_pub = rospy.Publisher("/sound_system/recognition_result", String, queue_size=10)
-        # <削除予定> <ここまで> Serviceに全て移行して欲しいが不可能なのでとりあえず用意、使用は非推奨
-        
+
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+        rospy.Service("/sound_system/recognition", RecognitionService, self.recognition)
+
+        self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
+
         self.multi_thread()
-    
+
     def read_noise_word(self):
         words = []
         with open(os.path.join(self.dictionary_path, self.gram)) as f:
@@ -57,38 +49,15 @@ class Sphinx:
                     continue
                 if "<rule>" in line:
                     continue
-                words = line.replace("<noise>", "").replace("=", "").replace(" ", "").replace("\n", "").replace(";",
-                                                                                                                "").split(
-                    "|")
+                line = line.replace("<noise>", "").replace("=", "").replace(" ", "").replace("\n", "").replace(";", "")
+                words = line.split("|")
                 print(words)
         return words
-    
-    def change_dict(self, message):
-        # type: (String) -> None
-        """
-        ROS Subscriber関数
-        受け取ったテキスト名のファイルをdictに設定
-        :param message: ファイル名
-        :return:
-        """
-        self.dict = message.data
-    
-    def change_gram(self, message):
-        # type: (String) -> None
-        """
-        ROS Subscriber関数
-        受け取ったテキスト名のファイルをgramに設定
-        :param message:
-        :return:
-        """
-        self.gram = message.data
-        # noiseになるwordをリストアップ
-        self.noise_words = self.read_noise_word()
-    
+
     def resume(self):
         """
         音声認識の再開
-        :return: ファイル名
+        :return: None
         """
         print("== START RECOGNITION ==")
         self.speech = LiveSpeech(
@@ -98,7 +67,7 @@ class Sphinx:
             dic=os.path.join(self.dictionary_path, self.dict),
             jsgf=os.path.join(self.dictionary_path, self.gram)
         )
-    
+
     def pause(self):
         """
         音声認識の一時停止
@@ -106,24 +75,28 @@ class Sphinx:
         """
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
-    
+
     def recognition(self, message):
-        # type: (StringServiceRequest) -> StringServiceResponse
+        # type: (RecognitionServiceRequest) -> RecognitionServiceResponse
         """
         音声認識の開始
         本来なら、ここでSphinxをResumeすればいいのだが、Sphinxの仕様でResumeはメインスレッドでしか出来ない
         よってここでは、フラグでマルチスレッドに処理をおこなわせ、結果が返ってくるまで待機させる
         self.resultを必ずreturn前で初期化しないと、以降の処理で同じ認識結果しか返ってこない
-        :param message:
+        :param message: dictとgram
         :return:
         """
+        self.dict = message.dict
+        self.gram = message.gram
+        self.noise_words = self.read_noise_word()
+
         self.start = True
         while not self.result:
             pass
         result = self.result
         self.result = None
-        return StringServiceResponse(result)
-    
+        return RecognitionServiceResponse(result)
+
     def multi_thread(self):
         """
         マルチスレッド
@@ -132,38 +105,24 @@ class Sphinx:
         self.startが処理の開始用フラグ
         :return:
         """
-        while True:
+        while not rospy.is_shutdown():
             # 音声認識の命令が来るまで待機
             if self.start:
-                self.se.play(self.se.START)  # beep
+                self.se.play(self.se.START)
                 self.resume()
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
                     if score > 0.1 and str(text) not in self.noise_words:
                         text = str(text)
-                        # self.pub.publish(text)  # 音声認識の結果をpublish
                         self.pause()
-                        self.se.play(self.se.STOP)  # beep
+                        self.se.play(self.se.STOP)
                         self.start = False
                         self.result = text
                         self.log_heard_pub.publish(text)
-                        self.result_pub.publish(self.result)  # <-削除予定
                         break
                     else:
                         print("**noise**")
-    
-    def recognition_start(self, message):
-        # type: (Bool) -> None
-        """
-        <削除予定>
-        使用非推奨
-        recognition関数のSubscriberバージョン
-        Serviceに移行が済み次第削除
-        :param message: Trueで音声認識開始
-        :return:
-        """
-        self.start = message.data
 
 
 if __name__ == "__main__":
