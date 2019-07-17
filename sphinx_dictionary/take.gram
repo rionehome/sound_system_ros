@@ -1,5 +1,5 @@
 #JSGF V1.0;
-grammar take_sphinx;
+grammar take;
 public <rule> = <command> <place> | <noise>;
 <command> = take this bag to the;
 <place> = kitchen | bed_room | living_room;
