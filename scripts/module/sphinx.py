@@ -84,8 +84,8 @@ class Sphinx:
         :param message: dictとgram
         :return: なし
         """
-        self.dict = message.dict
-        self.gram = message.gram
+        self.dict = "{}.dict".format(message.param)
+        self.gram = "{}.gram".format(message.param)
         self.noise_words = self.read_noise_word()
         return SphinxParamServiceResponse()
 
