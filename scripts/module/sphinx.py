@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Follow me, 音声認識
 
-import rospy
-import rospkg
-from std_msgs.msg import String, Bool
 import os
-from pocketsphinx import LiveSpeech
-from sound_system.srv import *
 import signal
+
+import rospkg
+import rospy
+from pocketsphinx import LiveSpeech
 from se import SE
-from sound_system.msg import SphinxParam
+from sound_system.srv import *
+from std_msgs.msg import String
 
 
 class Sphinx:
