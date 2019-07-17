@@ -35,7 +35,8 @@ class Sphinx:
 
         signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-        rospy.Service("/sound_system/recognition", RecognitionService, self.recognition)
+        rospy.Service("/sound_system/recognition", StringService, self.recognition)
+        rospy.Service("/sound_system/sphinx/param", SphinxParamService, self.change_param)
 
         self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
 
@@ -77,7 +78,7 @@ class Sphinx:
         self.speech = LiveSpeech(no_search=True)
 
     def change_param(self, message):
-        # type: (RecognitionServiceRequest) -> RecognitionServiceResponse
+        # type: (SphinxParamServiceRequest) -> SphinxParamServiceResponse
         """
         sphinxのdictとgramを変更する
         :param message: dictとgram
@@ -86,6 +87,7 @@ class Sphinx:
         self.dict = message.dict
         self.gram = message.gram
         self.noise_words = self.read_noise_word()
+        return SphinxParamServiceResponse()
 
     def recognition(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse
