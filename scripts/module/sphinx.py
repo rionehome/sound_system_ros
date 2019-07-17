@@ -76,8 +76,19 @@ class Sphinx:
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
 
-    def recognition(self, message):
+    def change_param(self, message):
         # type: (RecognitionServiceRequest) -> RecognitionServiceResponse
+        """
+        sphinxのdictとgramを変更する
+        :param message: dictとgram
+        :return: なし
+        """
+        self.dict = message.dict
+        self.gram = message.gram
+        self.noise_words = self.read_noise_word()
+
+    def recognition(self, message):
+        # type: (StringServiceRequest) -> StringServiceResponse
         """
         音声認識の開始
         本来なら、ここでSphinxをResumeすればいいのだが、Sphinxの仕様でResumeはメインスレッドでしか出来ない
@@ -86,16 +97,12 @@ class Sphinx:
         :param message: dictとgram
         :return:
         """
-        self.dict = message.dict
-        self.gram = message.gram
-        self.noise_words = self.read_noise_word()
-
         self.start = True
         while not self.result:
             pass
         result = self.result
         self.result = None
-        return RecognitionServiceResponse(result)
+        return StringServiceResponse(result)
 
     def multi_thread(self):
         """
