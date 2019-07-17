@@ -8,7 +8,6 @@ import rospy
 import rospkg
 from sound_system.srv import *
 
-from module.julius import Julius
 from module.sphinx import Sphinx
 from module.svox import Svox
 from std_msgs.msg import String
@@ -18,12 +17,12 @@ import os
 class Main:
 
     def __init__(self):
-        # self.julius = Julius(port=10500, config="navigation_nlp.jconf", is_debug=False)
 
         # self.sphinx = Sphinx(rospy.get_param("/sound_system/sphinx_config"))
         self.svox = Svox()
 
-        log_file = "{}/{}".format(rospkg.RosPack().get_path("sound_system"), "logger.log")
+        log_file = "{}/{}".format(
+            rospkg.RosPack().get_path("sound_system"), "logger.log")
         if os.path.exists(log_file):
             os.remove(log_file)
         self.log = open(log_file, "a")
@@ -60,7 +59,8 @@ class Main:
                 print("Hotword 受信")
                 print("音声認識 開始")
                 rospy.wait_for_service(self.recognition_topic, timeout=1)
-                text = rospy.ServiceProxy(self.recognition_topic, StringService)().response
+                text = rospy.ServiceProxy(
+                    self.recognition_topic, StringService)().response
                 print("音声認識 終了")
                 # 認識内容のログ出力と表示
                 print(text)
@@ -68,7 +68,8 @@ class Main:
 
                 # 認識したテキストデータを自然言語処理に投げる
                 rospy.wait_for_service(self.nlp_topic, timeout=1)
-                nlp_result = rospy.ServiceProxy(self.nlp_topic, NLPService)(text)
+                nlp_result = rospy.ServiceProxy(
+                    self.nlp_topic, NLPService)(text)
                 speak_text = nlp_result.response
 
                 # スピーク内容のログ出力と表示
@@ -77,7 +78,8 @@ class Main:
 
                 if speak_text:
                     rospy.wait_for_service(self.speak_topic, timeout=1)
-                    rospy.ServiceProxy(self.speak_topic, StringService)(speak_text)
+                    rospy.ServiceProxy(
+                        self.speak_topic, StringService)(speak_text)
 
                 # 全体に投げる用
             except rospy.ROSException:
