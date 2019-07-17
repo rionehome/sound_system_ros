@@ -29,14 +29,15 @@ class Sphinx:
         self.dictionary_path = "{}/{}".format(rospkg.RosPack().get_path('sound_system'), "sphinx_dictionary")
 
         # sphinxの設定をlaunchのパラメーターから取得
-        self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
-        self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()))
-        self.noise_words = self.read_noise_word()
+        self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()), None)
+        self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()), None)
+        if self.dict is not None:
+            self.noise_words = self.read_noise_word()
 
         signal.signal(signal.SIGINT, signal.SIG_DFL)
 
         rospy.Service("/sound_system/recognition", StringService, self.recognition)
-        rospy.Service("/sound_system/sphinx/param", SphinxParamService, self.change_param)
+        rospy.Service("/sound_system/sphinx/param", StringService, self.change_param)
 
         self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
 
@@ -52,7 +53,7 @@ class Sphinx:
                     continue
                 line = line.replace("<noise>", "").replace("=", "").replace(" ", "").replace("\n", "").replace(";", "")
                 words = line.split("|")
-                print(words)
+                # print(words)
         return words
 
     def resume(self):
@@ -78,16 +79,17 @@ class Sphinx:
         self.speech = LiveSpeech(no_search=True)
 
     def change_param(self, message):
-        # type: (SphinxParamServiceRequest) -> SphinxParamServiceResponse
+        # type: (StringServiceRequest) -> StringServiceResponse
         """
         sphinxのdictとgramを変更する
         :param message: dictとgram
         :return: なし
         """
-        self.dict = "{}.dict".format(message.param)
-        self.gram = "{}.gram".format(message.param)
+        self.dict = "{}.dict".format(message.request)
+        self.gram = "{}.gram".format(message.request)
         self.noise_words = self.read_noise_word()
-        return SphinxParamServiceResponse()
+        print("change_dict: {}".format(self.dict))
+        return StringServiceResponse()
 
     def recognition(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse

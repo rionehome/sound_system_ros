@@ -32,6 +32,7 @@ class Main:
         """
         text = message.request
         if text:
+            print("Speak: {}".format(text))
             text = text.replace("_", " ")
             self.log_spoke_pub.publish(text)
             self.svox.speak(text)
