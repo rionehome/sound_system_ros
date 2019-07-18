@@ -89,19 +89,6 @@ class Main:
         self.log.write("{}\n".format(text))
         self.log.flush()
 
-    def to_speak(self, message):
-        # type: (StringServiceRequest) -> StringServiceResponse
-        """
-        ROSサービスサーバー関数
-        テキストデータを投げたら、読み上げる
-        :param message: 中身なし
-        :return: なし
-        """
-        text = message.request
-        if text:
-            self.svox.speak(text)
-        return StringServiceResponse()
-
 
 if __name__ == "__main__":
     Main()
