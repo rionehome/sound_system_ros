@@ -22,23 +22,21 @@ class Sphinx:
         self.speech = None
         self.start = False
         self.result = None
+        self.dict = ""
+        self.gram = ""
+        self.param = ""
+        self.noise_words = []
 
         # 音響モデルのディレクトリの絶対パス と 辞書のディレクトリの絶対パス
         self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
         self.dictionary_path = "{}/{}".format(rospkg.RosPack().get_path('sound_system'), "sphinx_dictionary")
 
-        # sphinxの設定をlaunchのパラメーターから取得
-        self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()), None)
-        self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()), None)
-        if self.dict is not None:
-            self.noise_words = self.read_noise_word()
-
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
-
         rospy.Service("/sound_system/recognition", StringService, self.recognition)
         rospy.Service("/sound_system/sphinx/param", StringService, self.change_param)
 
         self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
+
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
 
         self.multi_thread()
 
@@ -77,17 +75,18 @@ class Sphinx:
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
 
-    def change_param(self, message):
-        # type: (StringServiceRequest) -> StringServiceResponse
+    def change_param(self, param):
+        # type: (str) -> None
         """
         sphinxのdictとgramを変更する
-        :param message: dictとgram
+        :param param: dictとgramのファイル名
         :return: なし
         """
-        self.dict = "{}.dict".format(message.request)
-        self.gram = "{}.gram".format(message.request)
+        self.dict = "{}.dict".format(param.request)
+        self.gram = "{}.gram".format(param.request)
         self.noise_words = self.read_noise_word()
         print("change_dict: {}".format(self.dict))
+        self.param = param
         return StringServiceResponse()
 
     def recognition(self, message):
@@ -100,6 +99,11 @@ class Sphinx:
         :param message: dictとgram
         :return:
         """
+        param = message.request
+
+        if param != "" and param != self.param:
+            self.change_param(param)
+
         self.start = True
         while not self.result:
             pass
