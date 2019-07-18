@@ -4,7 +4,7 @@
 import rospy
 import rospkg
 import signal
-import snowboydecoder
+import module.snowboydecoder
 from sound_system.srv import *
 from se import SE
 
@@ -13,8 +13,10 @@ class HotwordDetector:
 
     def __init__(self):
         self.interrupted = False
-        self.model = rospkg.RosPack().get_path('sound_system') + "/model/Hey_Ducker.pmdl"
-        self.detector = snowboydecoder.HotwordDetector(self.model, sensitivity=0.5)
+        self.model = rospkg.RosPack().get_path(
+            'sound_system') + "/model/Hey_Ducker.pmdl"
+        self.detector = module.snowboydecoder.HotwordDetector(
+            self.model, sensitivity=0.5)
         self.se = SE()
         self.init_ros()
 
