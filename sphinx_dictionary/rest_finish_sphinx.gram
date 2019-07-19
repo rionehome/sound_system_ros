@@ -1,5 +1,5 @@
 #JSGF V1.0;
 grammar rest_finish_sphinx;
 public <rule> = <command> | <noise>;
-<command> = wait | stop | stop the test | yes | no;
-<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;
+<command> = wait | stop | stop the test | please say again;
+<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | ha | ma | ya | ra | wa;
