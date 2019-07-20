@@ -22,17 +22,7 @@ class Sphinx:
 
         self.pause()
 
-        # マルチスレッドで動かす
-        self.thread_stop = threading.Event()
-        self.thread = threading.Thread(target=self.multi_thread)
-        self.thread.start()
-
-        def signal_handler(signal, frame):
-            self.thread_stop.set()
-            self.thread_stop.wait()
-            sys.exit()
-
-        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     def init_sphinx(self):
         self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
@@ -41,7 +31,7 @@ class Sphinx:
         # 音響モデルのディレクトリの絶対パス
         self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
         self.dictionary_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "dictionary")  # 辞書のディレクトリの絶対パス
+            os.path.abspath(__file__)), "module/dictionary")  # 辞書のディレクトリの絶対パス
         self.speech = None
         self.start = False
         self.result = None
@@ -61,20 +51,23 @@ class Sphinx:
             jsgf=os.path.join(self.dictionary_path, self.gram)
         )
 
-    # 音声認識ストップ
+    # 音声認識ストップ ###########################################
     def pause(self):
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
 
-    # 音声認識を開始 ##########################################
+    # 音声認識を開始 #############################################
     def recognition(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse
-        if message != "" :
-            self.dict = message + '.dict'
-            self.gram = message + '.gram'
+        if message.request != '' :
+            self.dict = message.request + '.dict'
+            self.gram = message.request + '.gram'
+
+        print "dict: ", self.dict
+        #print "gram: ", self.gram
 
         self.start = True
-        return StringServiceResponse("")
+        return StringServiceResponse()
 
     ############################################################
 
@@ -99,4 +92,5 @@ class Sphinx:
 
 
 if __name__ == "__main__":
-    Sphinx()
+    sphinx = Sphinx()
+    sphinx.multi_thread()
