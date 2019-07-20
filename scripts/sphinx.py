@@ -9,57 +9,47 @@ import sys
 from pocketsphinx import LiveSpeech
 from sound_system.srv import *
 import signal
+import threading
 
 
 class Sphinx:
 
     def __init__(self):
-
         rospy.init_node("sphinx")
 
+        self.init_sphinx()
+        self.init_ros()
+
+        self.pause()
+
+        # マルチスレッドで動かす
+        self.thread_stop = threading.Event()
+        self.thread = threading.Thread(target=self.multi_thread)
+        self.thread.start()
+
+        def signal_handler(signal, frame):
+            self.thread_stop.set()
+            self.thread_stop.wait()
+            sys.exit()
+
+        signal.signal(signal.SIGINT, signal_handler)
+
+    def init_sphinx(self):
         self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
         self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()))
 
-        self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"  # 音響モデルのディレクトリの絶対パス
-        self.dictionary_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dictionary")  # 辞書のディレクトリの絶対パス
+        # 音響モデルのディレクトリの絶対パス
+        self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
+        self.dictionary_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), "dictionary")  # 辞書のディレクトリの絶対パス
         self.speech = None
         self.start = False
         self.result = None
-        self.pause()
 
-        def exit(signal, frame):
-            print("\n process exit [PID=%d]" % self.process.pid)
-            self.process.kill()
-            sys.exit(0)
-
-        signal.signal(signal.SIGINT, exit)
-
+    def init_ros(self):
         topic = "/sound_system/recognition"
         rospy.Service(topic, StringService, self.recognition)
-        rospy.Subscriber("/sound_system/sphinx/dict", String, self.change_dict)
-        rospy.Subscriber("/sound_system/sphinx/gram", String, self.change_gram)
-        self.multi_thread()
-        # rospy.spin()
-
-    def change_dict(self, message):
-        # type: (String) -> None
-        """
-        ROS Subscriber関数
-        受け取ったテキスト名をdictに設定
-        :param message:
-        :return:
-        """
-        self.dict = message.data
-
-    def change_gram(self, message):
-        # type: (String) -> None
-        """
-        ROS Subscriber関数
-        受け取ったテキスト名をgramに設定
-        :param message:
-        :return:
-        """
-        self.gram = message.data
+        self.pub = rospy.Publisher("/sound_system/result", String, queue_size=10)
 
     def resume(self):
         print("== START RECOGNITION ==")
@@ -76,15 +66,17 @@ class Sphinx:
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
 
-    # 音声認識結果の表示
+    # 音声認識を開始 ##########################################
     def recognition(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse
+        if message != "" :
+            self.dict = message + '.dict'
+            self.gram = message + '.gram'
+
         self.start = True
-        while not self.result:
-            pass
-        result = self.result
-        self.result = None
-        return StringServiceResponse(result)
+        return StringServiceResponse("")
+
+    ############################################################
 
     def multi_thread(self):
         while True:
@@ -95,11 +87,12 @@ class Sphinx:
                     print(str(text), score)
                     if score > 0.1:
                         text = str(text)
-                        # self.pub.publish(text)  # 音声認識の結果をpublish
-                        # self.pause()
                         self.pause()
+
                         self.start = False
                         self.result = text
+                        self.pub.publish(self.result)  # 音声認識の結果をpublish
+                        self.result = None
                         break
                     else:
                         print("**noise**")
