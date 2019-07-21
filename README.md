@@ -61,3 +61,5 @@ Hotwordは「Hey Ducker」
 ### Service
 
 * **`/sound_system/recognition`** 音声認識（ sound_system/StringService ）
+
+* **`/sound_system/recognition_stop`** 音声認識を停止（ sound_system/StringService ）

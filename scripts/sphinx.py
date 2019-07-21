@@ -35,11 +35,28 @@ class Sphinx:
         self.speech = None
         self.start = False
         self.result = None
+        self.noise_words = self.read_noise_word()
 
     def init_ros(self):
         topic = "/sound_system/recognition"
         rospy.Service(topic, StringService, self.recognition)
+        service = "/sound_system/recognition_stop"
+        rospy.Service(service, StringService, self.recognition_stop)
+
         self.pub = rospy.Publisher("/sound_system/result", String, queue_size=10)
+
+    def read_noise_word(self):
+        words = []
+        with open(os.path.join(self.dictionary_path, self.gram)) as f:
+            for line in f.readlines():
+                if "<noise>" not in line:
+                    continue
+                if "<rule>" in line:
+                    continue
+                line = line.replace("<noise>", "").replace("=", "").replace(" ", "").replace("\n", "").replace(";", "")
+                words = line.split("|")
+                # print(words)
+        return words
 
     def resume(self):
         print("== START RECOGNITION ==")
@@ -62,11 +79,18 @@ class Sphinx:
         if message.request != '' :
             self.dict = message.request + '.dict'
             self.gram = message.request + '.gram'
+            self.noise_word = self.read_noise_word()
 
         print "dict: ", self.dict
         #print "gram: ", self.gram
 
         self.start = True
+        return StringServiceResponse()
+
+    def recognition_stop(self, message):
+        self.pause()
+        self.start = False
+        self.result = None
         return StringServiceResponse()
 
     ############################################################
@@ -78,7 +102,7 @@ class Sphinx:
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
-                    if score > 0.1:
+                    if score > 0.1 and str(text) not in self.noise_words:
                         text = str(text)
                         self.pause()
 
