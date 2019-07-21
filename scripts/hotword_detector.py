@@ -6,7 +6,7 @@ import rospkg
 import signal
 import module.snowboydecoder
 from sound_system.srv import *
-from se import SE
+from module.se import SE
 
 
 class HotwordDetector:
@@ -14,7 +14,7 @@ class HotwordDetector:
     def __init__(self):
         self.interrupted = False
         self.model = rospkg.RosPack().get_path(
-            'sound_system') + "/model/Hey_Ducker.pmdl"
+            'sound_system') + "/etc/model/Hey_Ducker.pmdl"
         self.detector = module.snowboydecoder.HotwordDetector(
             self.model, sensitivity=0.5)
         self.se = SE()

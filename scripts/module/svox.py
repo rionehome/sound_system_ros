@@ -11,7 +11,7 @@ from std_msgs.msg import Bool
 class Svox:
 
     def __init__(self):
-        self.file = rospkg.RosPack().get_path('sound_system') + "/voice/voice.wav"
+        self.file = rospkg.RosPack().get_path('sound_system') + "/etc/voice/voice.wav"
 
     def speak(self, text):
         """

@@ -3,6 +3,7 @@
 # Follow me, 音声認識
 
 import rospy
+import rospkg
 from std_msgs.msg import String, Bool
 import os
 import sys
@@ -30,8 +31,7 @@ class Sphinx:
 
         # 音響モデルのディレクトリの絶対パス
         self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
-        self.dictionary_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "module/dictionary")  # 辞書のディレクトリの絶対パス
+        self.dictionary_path = rospkg.RosPack().get_path('sound_system') + "/etc/dictionary"  # 辞書のディレクトリの絶対パス
         self.speech = None
         self.start = False
         self.result = None
