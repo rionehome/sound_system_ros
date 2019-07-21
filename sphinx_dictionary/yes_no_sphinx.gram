@@ -1,0 +1,5 @@
+#JSGF V1.0;
+grammar yes_no_sphinx;
+public <rule> = <command> | <noise>;
+<command> = yes | no;
+<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | ha | ma | ya | ra | wa;

@@ -1,0 +1,5 @@
+#JSGF V1.0;
+grammar spr_sound;
+public <rule> = <command> | <noise>;
+<command> = start game;
+<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;

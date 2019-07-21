@@ -1,0 +1,7 @@
+#JSGF V1.0;
+grammar test_sphinx;
+public <rule> = <command> | <command2> <place> | <noise>;
+<command> = follow me | stop following me | yes | no | Where are you;
+<command2> = Here is the | Please go to the;
+<place> = kitchen | bed_room | living_room | entrance | car;
+<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | na | ha | ma | ya | ra | wa;

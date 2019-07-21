@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="sound_system" name="yes_no_recognition" type="sphinx.py" output="screen">
+  <param name="dict" value="yes_no_sphinx.dict"/>
+  <param name="gram" value="yes_no_sphinx.gram"/>
+  <remap from="/sound_system/recognition_start" to="/yes_no/recognition_start"/>
+  <remap from="/sound_system/recognition_result" to="/yes_no/recognition_result"/>
+  </node>
+</launch>

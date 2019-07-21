@@ -1,31 +1,10 @@
 <launch>
 
-  <node pkg="sound_system" name="sound_system" type="main.py" output="screen">
-  <param name="recognition_module" value="julius"/>
-  </node>
+  <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+  <include file="$(find turtlebot_custom)/launch/lidar.launch"/>
+  <include file="$(find turtlebot_custom)/launch/gmapping_lidar.launch"/>
+  <include file="$(find turtlebot_custom)/launch/rviz.launch"/>
 
-  <!--node pkg="sound_system" name="julius" type="julius.py" output="screen">
-  <param name="config" value="navigation_nlp.jconf"/>
-  <param name="host" value="localhost"/>
-  <param name="port" value="10500"/>
-  <param name="debug" value="false"/>
-  </node-->
-
-  <node pkg="sound_system" name="sphinx" type="sphinx.py" output="screen">
-  <param name="dict" value="follow_me_sphinx.dict"/>
-  <param name="gram" value="follow_me_sphinx.gram"/>
-  </node>
-
-  <node pkg="sound_system" name="hotword" type="hotword_detector.py" output="screen">
-  </node>
-
-  <node pkg="sound_system" name="navigation_nlp" type="navigation_nlp.py" output="screen">
-  </node>
-
-  <node pkg="navigation" name="navigation" type="navigation.py" output="screen">
-  </node>
-
-  <node pkg="location" name="register" type="location_manager.py" output="screen">
-  </node>
+  <node pkg="emergency_stop" name="main" output="screen" type="main.py"/>
 
 </launch>
