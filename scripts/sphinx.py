@@ -9,57 +9,54 @@ import sys
 from pocketsphinx import LiveSpeech
 from sound_system.srv import *
 import signal
+import threading
 
 
 class Sphinx:
 
     def __init__(self):
-
         rospy.init_node("sphinx")
 
+        self.init_sphinx()
+        self.init_ros()
+
+        self.pause()
+
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+    def init_sphinx(self):
         self.dict = rospy.get_param("/{}/dict".format(rospy.get_name()))
         self.gram = rospy.get_param("/{}/gram".format(rospy.get_name()))
 
-        self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"  # 音響モデルのディレクトリの絶対パス
-        self.dictionary_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dictionary")  # 辞書のディレクトリの絶対パス
+        # 音響モデルのディレクトリの絶対パス
+        self.model_path = "/usr/local/lib/python2.7/dist-packages/pocketsphinx/model"
+        self.dictionary_path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), "module/dictionary")  # 辞書のディレクトリの絶対パス
         self.speech = None
         self.start = False
         self.result = None
-        self.pause()
+        self.noise_words = self.read_noise_word()
 
-        def exit(signal, frame):
-            print("\n process exit [PID=%d]" % self.process.pid)
-            self.process.kill()
-            sys.exit(0)
-
-        signal.signal(signal.SIGINT, exit)
-
+    def init_ros(self):
         topic = "/sound_system/recognition"
         rospy.Service(topic, StringService, self.recognition)
-        rospy.Subscriber("/sound_system/sphinx/dict", String, self.change_dict)
-        rospy.Subscriber("/sound_system/sphinx/gram", String, self.change_gram)
-        self.multi_thread()
-        # rospy.spin()
+        service = "/sound_system/recognition_stop"
+        rospy.Service(service, StringService, self.recognition_stop)
 
-    def change_dict(self, message):
-        # type: (String) -> None
-        """
-        ROS Subscriber関数
-        受け取ったテキスト名をdictに設定
-        :param message:
-        :return:
-        """
-        self.dict = message.data
+        self.pub = rospy.Publisher("/sound_system/result", String, queue_size=10)
 
-    def change_gram(self, message):
-        # type: (String) -> None
-        """
-        ROS Subscriber関数
-        受け取ったテキスト名をgramに設定
-        :param message:
-        :return:
-        """
-        self.gram = message.data
+    def read_noise_word(self):
+        words = []
+        with open(os.path.join(self.dictionary_path, self.gram)) as f:
+            for line in f.readlines():
+                if "<noise>" not in line:
+                    continue
+                if "<rule>" in line:
+                    continue
+                line = line.replace("<noise>", "").replace("=", "").replace(" ", "").replace("\n", "").replace(";", "")
+                words = line.split("|")
+                # print(words)
+        return words
 
     def resume(self):
         print("== START RECOGNITION ==")
@@ -71,20 +68,32 @@ class Sphinx:
             jsgf=os.path.join(self.dictionary_path, self.gram)
         )
 
-    # 音声認識ストップ
+    # 音声認識ストップ ###########################################
     def pause(self):
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
 
-    # 音声認識結果の表示
+    # 音声認識を開始 #############################################
     def recognition(self, message):
         # type: (StringServiceRequest) -> StringServiceResponse
+        if message.request != '' :
+            self.dict = message.request + '.dict'
+            self.gram = message.request + '.gram'
+            self.noise_word = self.read_noise_word()
+
+        print "dict: ", self.dict
+        #print "gram: ", self.gram
+
         self.start = True
-        while not self.result:
-            pass
-        result = self.result
+        return StringServiceResponse()
+
+    def recognition_stop(self, message):
+        self.pause()
+        self.start = False
         self.result = None
-        return StringServiceResponse(result)
+        return StringServiceResponse()
+
+    ############################################################
 
     def multi_thread(self):
         while True:
@@ -93,17 +102,19 @@ class Sphinx:
                 for text in self.speech:
                     score = text.confidence()
                     print(str(text), score)
-                    if score > 0.1:
+                    if score > 0.1 and str(text) not in self.noise_words:
                         text = str(text)
-                        # self.pub.publish(text)  # 音声認識の結果をpublish
-                        # self.pause()
                         self.pause()
+
                         self.start = False
                         self.result = text
+                        self.pub.publish(self.result)  # 音声認識の結果をpublish
+                        self.result = None
                         break
                     else:
                         print("**noise**")
 
 
 if __name__ == "__main__":
-    Sphinx()
+    sphinx = Sphinx()
+    sphinx.multi_thread()
