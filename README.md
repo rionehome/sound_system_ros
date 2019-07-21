@@ -2,7 +2,7 @@
 ## Overview
 音声認識、発話を管理するパッケージです。
 
-音声認識に julius
+音声認識に pocketSphinx
 
 Hotword検知には Snowboy
 
@@ -52,20 +52,14 @@ Hotwordは「Hey Ducker」
 ## Node
 **`name` sphinx**
 
-### Subscribe Topic
-* **`/sound_system/sphinx/dict`** 音声認識の設定を受け取る(std_msgs/String)
-
-* **`/sound_system/sphinx/gram`** 音声認識の設定を受け取る(std_msgs/String)
-
-* **`/sound_system/recognition_start`** 音声認識の開始を受け取る(std_msgs/Bool)
-
 ### Publish Topic
-* **`/sound_system/recognition_result`** 音声認識結果を送信(std_msgs/String)
 
-**`name` sound_system**
+* **`/sound_system/result`** 音声認識結果 ( std_msgs/String )
 
-**`name` speak**
+### Subscribe Topic
 
 ### Service
 
-* **`/sound_system/speak`** 発話（ sound_system/StringService ）
+* **`/sound_system/recognition`** 音声認識（ sound_system/StringService ）
+
+* **`/sound_system/recognition_stop`** 音声認識を停止（ sound_system/StringService ）

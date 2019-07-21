@@ -1,5 +1,11 @@
 import rospkg
 import subprocess
+<<<<<<< HEAD
+import rospy
+
+PATH = rospkg.RosPack().get_path('sound_system') + "/etc/SE"
+=======
+>>>>>>> develop
 
 
 class SE:

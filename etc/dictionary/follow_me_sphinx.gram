@@ -1,0 +1,4 @@
+#JSGF V1.0;
+grammar follow_me_sphinx;
+public <rule> = <command>;
+<command> = [follow me | stop following me | here is the car| yes | no];
