@@ -66,7 +66,6 @@ class Sphinx:
         print("== STOP RECOGNITION ==")
         self.speech = LiveSpeech(no_search=True)
         self.start = False
-        self.result = None
     
     # 音声認識を開始 #############################################
     def recognition(self, message):
@@ -107,12 +106,12 @@ class Sphinx:
                 score = text.confidence()
                 print(str(text), score)
                 if score > 0.1 and str(text) not in self.noise_words:
-                    text = str(text)
                     self.se.play(self.se.STOP)
+                    self.pause()
+                    text = str(text)
                     self.result = text
                     self.log_heard_pub.publish(text)
                     self.result_pub.publish(self.result)
-                    self.pause()
                     break
                 else:
                     print("**noise**")
