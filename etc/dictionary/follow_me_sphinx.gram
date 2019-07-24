@@ -1,4 +1,5 @@
 #JSGF V1.0;
 grammar follow_me_sphinx;
-public <rule> = <command>;
-<command> = [follow me | stop following me | here is the car| yes | no];
+public <rule> = <command> | <noise>;
+<command> = follow me | stop following me | here is the car | please say again;
+<noise> = a | b | c | d | e | f | g | h | i | j | k | l | m | n | p | q | r | s | t | u | v | w | s | y | z | ka | sa | ta | ha | ma | ya | ra | wa;
