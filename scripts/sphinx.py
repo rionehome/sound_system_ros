@@ -8,7 +8,6 @@ from std_msgs.msg import String
 import os
 from pocketsphinx import LiveSpeech
 from sound_system.srv import *
-import signal
 from module.se import SE
 
 
@@ -36,8 +35,6 @@ class Sphinx:
         self.log_heard_pub = rospy.Publisher("/sound_system/log/heard", String, queue_size=10)
         self.result_pub = rospy.Publisher("/sound_system/result", String, queue_size=10)
         self.pause()
-        
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
     
     def read_noise_word(self):
         words = []
@@ -95,7 +92,7 @@ class Sphinx:
         self.startが処理の開始用フラグ
         :return:
         """
-        while True:
+        while not rospy.core.is_shutdown():
             # 音声認識の命令が来るまで待機
             if not self.start:
                 continue
