@@ -2,4 +2,3 @@
 *.pyc
 .vscode
 log/
-etc/voice/voice.wav
