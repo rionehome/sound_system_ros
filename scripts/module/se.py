@@ -1,15 +1,16 @@
 import rospkg
 import subprocess
-import rospy
 
 PATH = rospkg.RosPack().get_path('sound_system') + "/SE"
 
 
 class SE:
-    WAKEUP = PATH + "/" + "wakeup.wav"
-    START = PATH + "/" + "start.wav"
-    STOP = PATH + "/" + "stop.wav"
-
+    def __init__(self):
+        self.se_path = "{}/etc/SE/".format(rospkg.RosPack().get_path('sound_system'))
+        self.WAKEUP = self.se_path + "wakeup.wav"
+        self.START = self.se_path + "start.wav"
+        self.STOP = self.se_path + "stop.wav"
+    
     @staticmethod
     def play(se):
         # type: (str) -> None

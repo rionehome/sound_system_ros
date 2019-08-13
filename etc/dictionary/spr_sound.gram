@@ -1,0 +1,5 @@
+#JSGF V1.0;
+grammar spr_sound;
+public <rule> = <command> | <noise>;
+<command> = start game;
+<noise> = ah | and | as | burning | but | cool | ether | ha | hey | hi | how | huh | if | in | is | it | new | of | oh | okay | one | only | seven | so | thad | that | the | thing | ugh | what | when | who | why | yea | yeah | yo;

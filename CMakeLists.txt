@@ -61,6 +61,7 @@ find_package(catkin REQUIRED COMPONENTS
    StringService.srv
    EmptyService.srv
    NLPService.srv
+   RecognitionService.srv
  )
 
 ## Generate actions in the 'action' folder
